@@ -15,7 +15,7 @@ public class MyPlayer : MonoBehaviour
     public int maxHealth; // 최대 체력
     public int curHealth; // 현재 체력
 
-    private Animator anim; // 플레이어 객체의 Animator
+    public Animator anim; // 플레이어 객체의 Animator
     private Rigidbody rigid; // 플레이어 객체의 rigidbody
     
     public float hAxis;
@@ -64,7 +64,6 @@ public class MyPlayer : MonoBehaviour
     void Move()
     {
         moveVec = new Vector3(hAxis, 0, vAxis).normalized;
-        
         Vector3 prePosition = transform.position;
         
         // 구르기중이라면 방향 고정
@@ -80,14 +79,17 @@ public class MyPlayer : MonoBehaviour
         }
         anim.SetBool("isRun", moveVec != Vector3.zero);
         rigid.MovePosition(transform.position + moveSpeed * Time.fixedDeltaTime * moveVec);
-        if (moveVec != Vector3.zero || transform.position != prePosition)
+        // 이동 패킷 전송 
         {
             C_Move movePacket = new C_Move();
-            PositionInfo.PosX = (int)hAxis;
-            PositionInfo.PosZ = (int)vAxis;
+            PositionInfo.PosX = transform.position.x;
+            PositionInfo.PosZ = transform.position.z;
+            PositionInfo.HAxis = hAxis;
+            PositionInfo.VAxis = vAxis;
+            PositionInfo.RAxis = rDown;
+            PositionInfo.AAxis = aDown;
             movePacket.PosInfo = PositionInfo;
             Managers.Network.Send(movePacket);
-            Debug.Log("Packet_Send!!!");
         }
     }
 
@@ -100,6 +102,19 @@ public class MyPlayer : MonoBehaviour
     {
         if (rDown && !isRoll && isRollReady && !isAttack && !isHit)
         {
+            // 구르기 패킷 전달
+            {
+                C_Move movePacket = new C_Move();
+                PositionInfo.PosX = transform.position.x;
+                PositionInfo.PosZ = transform.position.z;
+                PositionInfo.HAxis = hAxis;
+                PositionInfo.VAxis = vAxis;
+                PositionInfo.RAxis = rDown;
+                PositionInfo.AAxis = aDown;
+                movePacket.PosInfo = PositionInfo;
+                Managers.Network.Send(movePacket);
+            }
+            
             rollVec = moveVec; // 구르기시 방향 저장
             
             anim.SetTrigger("doRoll");
@@ -134,13 +149,25 @@ public class MyPlayer : MonoBehaviour
     {
         if (aDown && isAttackReady && moveVec == Vector3.zero && !isRoll && !isHit && !isInvincible)
         {
+            // 구르기 패킷 전달
+            {
+                C_Move movePacket = new C_Move();
+                PositionInfo.PosX = transform.position.x;
+                PositionInfo.PosZ = transform.position.z;
+                PositionInfo.HAxis = hAxis;
+                PositionInfo.VAxis = vAxis;
+                PositionInfo.RAxis = rDown;
+                PositionInfo.AAxis = aDown;
+                movePacket.PosInfo = PositionInfo;
+                Managers.Network.Send(movePacket);
+            }
             anim.SetTrigger("comboAttack");
             
             StopCoroutine("Attacking");
             StartCoroutine("Attacking", 0.5f);
             StartCoroutine(AttackDelay(attackDelay));
             
-            equipWeapon.Use();
+            //equipWeapon.Use();
         }
     }
     // 공격 도중 재공격 및 다른 모션 불가

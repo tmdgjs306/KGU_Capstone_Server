@@ -33,11 +33,12 @@ namespace Google.Protobuf.Protocol {
             "EhAKCHBsYXllcklkGAEgASgFEicKB3Bvc0luZm8YAiABKAsyFi5Qcm90b2Nv",
             "bC5Qb3NpdGlvbkluZm8iVQoKUGxheWVySW5mbxIQCghwbGF5ZXJJZBgBIAEo",
             "BRIMCgRuYW1lGAIgASgJEicKB3Bvc0luZm8YAyABKAsyFi5Qcm90b2NvbC5Q",
-            "b3NpdGlvbkluZm8iKgoMUG9zaXRpb25JbmZvEgwKBFBvc1gYASABKAUSDAoE",
-            "UG9zWhgCIAEoBSpfCgVNc2dJZBIQCgxTX0VOVEVSX0dBTUUQABIQCgxTX0xF",
-            "QVZFX0dBTUUQARILCgdTX1NQQVdOEAISDQoJU19ERVNQQVdOEAMSCgoGQ19N",
-            "T1ZFEAQSCgoGU19NT1ZFEAVCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2Nv",
-            "bGIGcHJvdG8z"));
+            "b3NpdGlvbkluZm8iZgoMUG9zaXRpb25JbmZvEgwKBFBvc1gYASABKAISDAoE",
+            "UG9zWhgCIAEoAhINCgVoQXhpcxgDIAEoAhINCgV2QXhpcxgEIAEoAhINCgVy",
+            "QXhpcxgFIAEoCBINCgVhQXhpcxgGIAEoCCpfCgVNc2dJZBIQCgxTX0VOVEVS",
+            "X0dBTUUQABIQCgxTX0xFQVZFX0dBTUUQARILCgdTX1NQQVdOEAISDQoJU19E",
+            "RVNQQVdOEAMSCgoGQ19NT1ZFEAQSCgoGU19NT1ZFEAVCG6oCGEdvb2dsZS5Q",
+            "cm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -48,7 +49,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Move), global::Google.Protobuf.Protocol.C_Move.Parser, new[]{ "PosInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Move), global::Google.Protobuf.Protocol.S_Move.Parser, new[]{ "PlayerId", "PosInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerInfo), global::Google.Protobuf.Protocol.PlayerInfo.Parser, new[]{ "PlayerId", "Name", "PosInfo" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PositionInfo), global::Google.Protobuf.Protocol.PositionInfo.Parser, new[]{ "PosX", "PosZ" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PositionInfo), global::Google.Protobuf.Protocol.PositionInfo.Parser, new[]{ "PosX", "PosZ", "HAxis", "VAxis", "RAxis", "AAxis" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1062,6 +1063,10 @@ namespace Google.Protobuf.Protocol {
     public PositionInfo(PositionInfo other) : this() {
       posX_ = other.posX_;
       posZ_ = other.posZ_;
+      hAxis_ = other.hAxis_;
+      vAxis_ = other.vAxis_;
+      rAxis_ = other.rAxis_;
+      aAxis_ = other.aAxis_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1072,9 +1077,9 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "PosX" field.</summary>
     public const int PosXFieldNumber = 1;
-    private int posX_;
+    private float posX_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int PosX {
+    public float PosX {
       get { return posX_; }
       set {
         posX_ = value;
@@ -1083,12 +1088,56 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "PosZ" field.</summary>
     public const int PosZFieldNumber = 2;
-    private int posZ_;
+    private float posZ_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int PosZ {
+    public float PosZ {
       get { return posZ_; }
       set {
         posZ_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "hAxis" field.</summary>
+    public const int HAxisFieldNumber = 3;
+    private float hAxis_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float HAxis {
+      get { return hAxis_; }
+      set {
+        hAxis_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "vAxis" field.</summary>
+    public const int VAxisFieldNumber = 4;
+    private float vAxis_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float VAxis {
+      get { return vAxis_; }
+      set {
+        vAxis_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rAxis" field.</summary>
+    public const int RAxisFieldNumber = 5;
+    private bool rAxis_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool RAxis {
+      get { return rAxis_; }
+      set {
+        rAxis_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "aAxis" field.</summary>
+    public const int AAxisFieldNumber = 6;
+    private bool aAxis_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool AAxis {
+      get { return aAxis_; }
+      set {
+        aAxis_ = value;
       }
     }
 
@@ -1105,16 +1154,24 @@ namespace Google.Protobuf.Protocol {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (PosX != other.PosX) return false;
-      if (PosZ != other.PosZ) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PosX, other.PosX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PosZ, other.PosZ)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(HAxis, other.HAxis)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(VAxis, other.VAxis)) return false;
+      if (RAxis != other.RAxis) return false;
+      if (AAxis != other.AAxis) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (PosX != 0) hash ^= PosX.GetHashCode();
-      if (PosZ != 0) hash ^= PosZ.GetHashCode();
+      if (PosX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PosX);
+      if (PosZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PosZ);
+      if (HAxis != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(HAxis);
+      if (VAxis != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(VAxis);
+      if (RAxis != false) hash ^= RAxis.GetHashCode();
+      if (AAxis != false) hash ^= AAxis.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1128,13 +1185,29 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (PosX != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(PosX);
+      if (PosX != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(PosX);
       }
-      if (PosZ != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(PosZ);
+      if (PosZ != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(PosZ);
+      }
+      if (HAxis != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(HAxis);
+      }
+      if (VAxis != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(VAxis);
+      }
+      if (RAxis != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(RAxis);
+      }
+      if (AAxis != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(AAxis);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1144,11 +1217,23 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (PosX != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PosX);
+      if (PosX != 0F) {
+        size += 1 + 4;
       }
-      if (PosZ != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PosZ);
+      if (PosZ != 0F) {
+        size += 1 + 4;
+      }
+      if (HAxis != 0F) {
+        size += 1 + 4;
+      }
+      if (VAxis != 0F) {
+        size += 1 + 4;
+      }
+      if (RAxis != false) {
+        size += 1 + 1;
+      }
+      if (AAxis != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1161,11 +1246,23 @@ namespace Google.Protobuf.Protocol {
       if (other == null) {
         return;
       }
-      if (other.PosX != 0) {
+      if (other.PosX != 0F) {
         PosX = other.PosX;
       }
-      if (other.PosZ != 0) {
+      if (other.PosZ != 0F) {
         PosZ = other.PosZ;
+      }
+      if (other.HAxis != 0F) {
+        HAxis = other.HAxis;
+      }
+      if (other.VAxis != 0F) {
+        VAxis = other.VAxis;
+      }
+      if (other.RAxis != false) {
+        RAxis = other.RAxis;
+      }
+      if (other.AAxis != false) {
+        AAxis = other.AAxis;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1178,12 +1275,28 @@ namespace Google.Protobuf.Protocol {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            PosX = input.ReadInt32();
+          case 13: {
+            PosX = input.ReadFloat();
             break;
           }
-          case 16: {
-            PosZ = input.ReadInt32();
+          case 21: {
+            PosZ = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            HAxis = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            VAxis = input.ReadFloat();
+            break;
+          }
+          case 40: {
+            RAxis = input.ReadBool();
+            break;
+          }
+          case 48: {
+            AAxis = input.ReadBool();
             break;
           }
         }

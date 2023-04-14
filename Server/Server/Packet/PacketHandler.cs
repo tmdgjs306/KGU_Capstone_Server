@@ -13,13 +13,12 @@ class PacketHandler
         C_Move movePacket = packet as C_Move;
         ClientSession clientSession = session as ClientSession;
 
-        Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosZ})");
+        //Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosZ})");
 
         if (clientSession.MyPlayer == null)
             return;
         if (clientSession.MyPlayer.Room == null)
             return;
-
 
         // 서버에서 좌표이동 
         PlayerInfo info = clientSession.MyPlayer.Info;

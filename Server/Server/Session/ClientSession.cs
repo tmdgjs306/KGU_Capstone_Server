@@ -16,6 +16,7 @@ namespace Server
 	{
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
+
 		public void Send(IMessage packet)
         {
 			string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
@@ -29,6 +30,8 @@ namespace Server
 			Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
 			Send(new ArraySegment<byte>(sendBuffer));
 		}
+
+
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");

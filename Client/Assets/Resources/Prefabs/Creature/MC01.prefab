@@ -2964,7 +2964,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 0a9c4a8d004a7f245a27d28582d1770d, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -2986,7 +2986,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 84
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!65 &2482314357190476398
 BoxCollider:
@@ -3013,13 +3013,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421d8bc8d3147064fa0873ce7370af5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  name: 
   moveSpeed: 10
   rollCoolTime: 3
   equipWeapon: {fileID: 9221907657470633229}
   attackDelay: 0.3
   maxHealth: 100
   curHealth: 100
+  rigid: {fileID: 0}
+  hAxis: 0
+  vAxis: 0
+  rDown: 0
+  aDown: 0
+  isRollReady: 1
+  isRoll: 0
   isAttack: 0
+  nextVec: {x: 0, y: 0, z: 0}
+  Lookat: {x: 0, y: 0, z: 0}
 --- !u!1 &5630847606273661097
 GameObject:
   m_ObjectHideFlags: 0
@@ -10869,7 +10879,7 @@ BoxCollider:
   m_GameObject: {fileID: 8992290545751191625}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.7572304, y: 1.5640769, z: 0.5863492}
   m_Center: {x: -0.015892344, y: 0.6147062, z: -0.008838271}

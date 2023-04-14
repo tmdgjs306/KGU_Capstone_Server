@@ -7,24 +7,19 @@ using UnityEngine;
 
 public class ObjectManager
 {
-	public MyPlayer MyPlayer { get; set; }
+	public MyPlayer MyPlayer;
 	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
-	private PositionInfo PositionInfo = new PositionInfo();
-	public void Add(PlayerInfo info, bool myPlayer = false)
+	public int Add(PlayerInfo info, bool myPlayer = false)
 	{
 		if (myPlayer)
 		{
 			GameObject go = Managers.Resource.Instantiate("Creature/HeroPlayer");
 			go.GetComponent<MyPlayer>().enabled = true;
 			go.name = info.Name;
-			Debug.Log(info.Name);
 			_objects.Add(info.PlayerId, go);
 			MyPlayer = go.GetComponent<MyPlayer>();
 			MyPlayer.Id = info.PlayerId;
-			Debug.Log(info.Name);
 			MyPlayer.name = info.Name;
-			MyPlayer.hAxis = info.PosInfo.PosX;
-			MyPlayer.vAxis = info.PosInfo.PosZ;
 		}
 		else
 		{
@@ -35,12 +30,9 @@ public class ObjectManager
 			_objects.Add(info.PlayerId, go);
 			Player pr = go.GetComponent<Player>();
 			pr.Id = info.PlayerId;
-			pr.name = info.Name;
-			pr.hAxis = info.PosInfo.PosX;
-			pr.vAxis = info.PosInfo.PosZ;
 		}
+		return MyPlayer.Id;
 	}
-
 	public void Add(int id, GameObject go)
 	{
 		_objects.Add(id, go);
@@ -48,7 +40,10 @@ public class ObjectManager
 
 	public void Remove(int id)
 	{
+		GameObject gameObject = _objects[id];
+		Managers.Resource.Destroy(gameObject);
 		_objects.Remove(id);
+		
 	}
 
 	public void RemoveMyPlayer()

@@ -57,4 +57,11 @@ public class Managers : MonoBehaviour
         Scene.Clear();
         Pool.Clear();
     }
+
+    IEnumerator Entity_Pos()
+    {
+        yield return new WaitForSeconds(0.2f);
+        
+    }
+    
 }

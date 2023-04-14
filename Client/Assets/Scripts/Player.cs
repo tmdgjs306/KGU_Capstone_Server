@@ -16,13 +16,13 @@ public class Player : MonoBehaviour
     public int curHealth; // 현재 체력
 
     private Animator anim; // 플레이어 객체의 Animator
-    private Rigidbody rigid; // 플레이어 객체의 rigidbody
+    public Rigidbody rigid; // 플레이어 객체의 rigidbody
     
     public float hAxis;
     public float vAxis;
     
-    private bool rDown; // 구르기 버튼
-    private bool aDown; // 공격 버튼
+    public bool rDown; // 구르기 버튼
+    public bool aDown; // 공격 버튼
 
     public bool isRollReady = true; // 구르기 가능 여부
     public bool isRoll; // 구르기 작동 여부
@@ -33,59 +33,67 @@ public class Player : MonoBehaviour
     
     private Vector3 moveVec; // 이동방향
     private Vector3 rollVec; // 구르기 할 때의 방향
-    
+    public Vector3 nextVec;
+    public Vector3 Lookat;
     public int Id { get; set; }
-    
-    private void Awake()
-    {
-        PlayerCamera.targetTransform = GameObject.Find("MC01").transform;
-    }
     void Start()
     {
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    public void Update()
     {
-        GetInput();
-        Move();
+        //GetInput();
+        //Move();
+        MoveToFixedPoint();;
         Turn();
         Roll();
         Attack();
-        PlayerCamera.targetTransform = GameObject.Find("MC01").transform;
     }
-
-    void GetInput()
+    
+    /*void GetInput()
     {
         hAxis = Input.GetAxisRaw("Horizontal");
         vAxis = Input.GetAxisRaw("Vertical");
         rDown = Input.GetKeyDown(KeyCode.Space);
         aDown = Input.GetMouseButton(0);
-    }
-    void Move()
+    }*/
+    
+    public void MoveToFixedPoint()
     {
-        Vector3 prePosition = transform.position;
-        
+        if (isRoll)
+        {
+            Lookat = rollVec;
+        }
+        else if (isAttack)
+        {
+            Lookat = Vector3.zero;
+        }
+        anim.SetBool("isRun", Lookat != Vector3.zero);
+        rigid.MovePosition(transform.position + 5 * Time.fixedDeltaTime * Lookat);
+    }
+    
+    /*void Move()
+    {
+        moveVec = new Vector3(hAxis, 0, vAxis).normalized;
         // 구르기중이라면 방향 고정
         if (isRoll)
         {
             moveVec = rollVec;
         }
-
         // 공격중이라면 이동 불가
         else if (isAttack)
         {
             moveVec = Vector3.zero;
         }
-        
         anim.SetBool("isRun", moveVec != Vector3.zero);
-        rigid.MovePosition(transform.position + moveSpeed * Time.fixedDeltaTime * moveVec);
-    }
+        rigid.MovePosition(transform.position + 5 * Time.fixedDeltaTime * moveVec);
+    }*/
 
     void Turn()
     {
-        transform.LookAt(transform.position + moveVec);
+        transform.LookAt(transform.position + Lookat);
     }
 
     void Roll()
@@ -113,7 +121,7 @@ public class Player : MonoBehaviour
         isRoll = false;
         moveSpeed /= 1.5f;
     }
-
+    
     // 구르기 쿨타임 적용
     IEnumerator RollCoolTime(float time)
     {
@@ -130,9 +138,10 @@ public class Player : MonoBehaviour
             StopCoroutine("Attacking");
             StartCoroutine("Attacking", 0.5f);
             StartCoroutine(AttackDelay(attackDelay));
-            equipWeapon.Use();
+            //equipWeapon.Use();
         }
     }
+    
     // 공격 도중 재공격 및 다른 모션 불가
     IEnumerator Attacking(float time)
     {

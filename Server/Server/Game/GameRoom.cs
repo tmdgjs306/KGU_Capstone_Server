@@ -31,13 +31,14 @@ namespace Server.Game
                     newPlayer.Session.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players)
+                    foreach (Player p in _players) 
                     {
                         if (newPlayer != p)
                             spawnPacket.Players.Add(p.Info);
                     }
                     newPlayer.Session.Send(spawnPacket);
                 }
+
                 // 타인에게 정보 전송
                 {
                     S_Spawn spawnPacket = new S_Spawn();
@@ -88,6 +89,7 @@ namespace Server.Game
             {
                 foreach (Player p in _players)
                 {
+                    Console.WriteLine($"Send Packet for {p.Info.PlayerId} ");
                     p.Session.Send(packet);
                 }
             }

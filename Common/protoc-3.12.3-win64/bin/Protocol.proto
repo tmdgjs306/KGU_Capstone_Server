@@ -43,6 +43,10 @@ message PlayerInfo{
 }
 
 message PositionInfo{
-    int32 PosX =1;
-    int32 PosZ =2;
+    float PosX =1;
+    float PosZ =2;
+    float hAxis =3;
+    float vAxis =4;
+    bool rAxis = 5;
+    bool aAxis = 6;
 }

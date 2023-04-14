@@ -15,7 +15,7 @@ public class MyPlayer : MonoBehaviour
     public int maxHealth; // 최대 체력
     public int curHealth; // 현재 체력
 
-    public Animator anim; // 플레이어 객체의 Animator
+    private Animator anim; // 플레이어 객체의 Animator
     private Rigidbody rigid; // 플레이어 객체의 rigidbody
     
     public float hAxis;
@@ -34,7 +34,8 @@ public class MyPlayer : MonoBehaviour
     private Vector3 moveVec; // 이동방향
     private Vector3 rollVec; // 구르기 할 때의 방향
 
-    private PositionInfo PositionInfo = new PositionInfo();
+    private PositionInfo _positionInfo = new PositionInfo();
+    private ActionInfo _actionInfo = new ActionInfo();
     public int Id { get; set; }
     
     void Start()
@@ -50,7 +51,6 @@ public class MyPlayer : MonoBehaviour
         Turn();
         Roll();
         Attack();
-        PlayerCamera.targetTransform = GameObject.Find(name).transform;
     }
 
     void GetInput()
@@ -60,11 +60,10 @@ public class MyPlayer : MonoBehaviour
         rDown = Input.GetKeyDown(KeyCode.Space);
         aDown = Input.GetMouseButton(0);
     }
-
+    
     void Move()
     {
         moveVec = new Vector3(hAxis, 0, vAxis).normalized;
-        Vector3 prePosition = transform.position;
         
         // 구르기중이라면 방향 고정
         if (isRoll)
@@ -79,18 +78,9 @@ public class MyPlayer : MonoBehaviour
         }
         anim.SetBool("isRun", moveVec != Vector3.zero);
         rigid.MovePosition(transform.position + moveSpeed * Time.fixedDeltaTime * moveVec);
+        
         // 이동 패킷 전송 
-        {
-            C_Move movePacket = new C_Move();
-            PositionInfo.PosX = transform.position.x;
-            PositionInfo.PosZ = transform.position.z;
-            PositionInfo.HAxis = hAxis;
-            PositionInfo.VAxis = vAxis;
-            PositionInfo.RAxis = rDown;
-            PositionInfo.AAxis = aDown;
-            movePacket.PosInfo = PositionInfo;
-            Managers.Network.Send(movePacket);
-        }
+        SendMovePacket();
     }
 
     void Turn()
@@ -102,19 +92,7 @@ public class MyPlayer : MonoBehaviour
     {
         if (rDown && !isRoll && isRollReady && !isAttack && !isHit)
         {
-            // 구르기 패킷 전달
-            {
-                C_Move movePacket = new C_Move();
-                PositionInfo.PosX = transform.position.x;
-                PositionInfo.PosZ = transform.position.z;
-                PositionInfo.HAxis = hAxis;
-                PositionInfo.VAxis = vAxis;
-                PositionInfo.RAxis = rDown;
-                PositionInfo.AAxis = aDown;
-                movePacket.PosInfo = PositionInfo;
-                Managers.Network.Send(movePacket);
-            }
-            
+            SendActionPacket();
             rollVec = moveVec; // 구르기시 방향 저장
             
             anim.SetTrigger("doRoll");
@@ -149,18 +127,7 @@ public class MyPlayer : MonoBehaviour
     {
         if (aDown && isAttackReady && moveVec == Vector3.zero && !isRoll && !isHit && !isInvincible)
         {
-            // 구르기 패킷 전달
-            {
-                C_Move movePacket = new C_Move();
-                PositionInfo.PosX = transform.position.x;
-                PositionInfo.PosZ = transform.position.z;
-                PositionInfo.HAxis = hAxis;
-                PositionInfo.VAxis = vAxis;
-                PositionInfo.RAxis = rDown;
-                PositionInfo.AAxis = aDown;
-                movePacket.PosInfo = PositionInfo;
-                Managers.Network.Send(movePacket);
-            }
+            SendActionPacket();
             anim.SetTrigger("comboAttack");
             
             StopCoroutine("Attacking");
@@ -223,5 +190,26 @@ public class MyPlayer : MonoBehaviour
         yield return new WaitForSeconds(time);
 
         isInvincible = false;
+    }
+    
+    // 이동 패킷 전송
+    void SendMovePacket()
+    {
+        C_Move movePacket = new C_Move();
+        _positionInfo.PosX = transform.position.x;
+        _positionInfo.PosZ = transform.position.z;
+        _positionInfo.HAxis = hAxis;
+        _positionInfo.VAxis = vAxis;
+        movePacket.PosInfo = _positionInfo;
+        Managers.Network.Send(movePacket);
+    }
+    // 액션 패킷 전송
+    void SendActionPacket()
+    {
+        C_Action actionPacket = new C_Action();
+        _actionInfo.ADown = aDown;
+        _actionInfo.RDown = rDown;
+        actionPacket.ActInfo = _actionInfo;
+        Managers.Network.Send(actionPacket);
     }
 }

@@ -89,7 +89,6 @@ namespace Server.Game
             {
                 foreach (Player p in _players)
                 {
-                    Console.WriteLine($"Send Packet for {p.Info.PlayerId} ");
                     p.Session.Send(packet);
                 }
             }

@@ -4,38 +4,36 @@ using System.Collections.Generic;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
-    public string name;
     public float moveSpeed;
-    public float rollCoolTime = 3.0f;
     public Weapon equipWeapon; // 장착중인 무기
-    public float attackDelay = 0.3f; // 공격 딜레이
     public int maxHealth; // 최대 체력
     public int curHealth; // 현재 체력
 
     private Animator anim; // 플레이어 객체의 Animator
-    public Rigidbody rigid; // 플레이어 객체의 rigidbody
+    private Rigidbody rigid; // 플레이어 객체의 rigidbody
     
     public float hAxis;
     public float vAxis;
     
     public bool rDown; // 구르기 버튼
     public bool aDown; // 공격 버튼
-
-    public bool isRollReady = true; // 구르기 가능 여부
+    
     public bool isRoll; // 구르기 작동 여부
     private bool isAttackReady = true; // 공격 가능 여부
     private bool isHit;
     private bool isInvincible;
     public bool isAttack; // 공격 작동 여부
     
-    private Vector3 moveVec; // 이동방향
+    
     private Vector3 rollVec; // 구르기 할 때의 방향
-    public Vector3 nextVec;
-    public Vector3 Lookat;
-    public int Id { get; set; }
+    
+    public Vector3 curPos; //
+    public Vector3 moveVec;// 이동방향
+    
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -44,70 +42,43 @@ public class Player : MonoBehaviour
 
     public void Update()
     {
-        //GetInput();
-        //Move();
         MoveToFixedPoint();;
         Turn();
         Roll();
         Attack();
+        rDown = false;
+        aDown = false;
     }
-    
-    /*void GetInput()
-    {
-        hAxis = Input.GetAxisRaw("Horizontal");
-        vAxis = Input.GetAxisRaw("Vertical");
-        rDown = Input.GetKeyDown(KeyCode.Space);
-        aDown = Input.GetMouseButton(0);
-    }*/
     
     public void MoveToFixedPoint()
     {
         if (isRoll)
         {
-            Lookat = rollVec;
-        }
-        else if (isAttack)
-        {
-            Lookat = Vector3.zero;
-        }
-        anim.SetBool("isRun", Lookat != Vector3.zero);
-        rigid.MovePosition(transform.position + 5 * Time.fixedDeltaTime * Lookat);
-    }
-    
-    /*void Move()
-    {
-        moveVec = new Vector3(hAxis, 0, vAxis).normalized;
-        // 구르기중이라면 방향 고정
-        if (isRoll)
-        {
             moveVec = rollVec;
         }
-        // 공격중이라면 이동 불가
         else if (isAttack)
         {
             moveVec = Vector3.zero;
         }
         anim.SetBool("isRun", moveVec != Vector3.zero);
         rigid.MovePosition(transform.position + 5 * Time.fixedDeltaTime * moveVec);
-    }*/
-
+    }
+ 
     void Turn()
     {
-        transform.LookAt(transform.position + Lookat);
+        transform.LookAt(transform.position + moveVec);
     }
 
     void Roll()
     {
-        if (rDown && !isRoll && isRollReady && !isAttack && !isHit)
+        if (rDown && !isRoll && !isAttack && !isHit)
         {
             rollVec = moveVec; // 구르기시 방향 저장
             
             anim.SetTrigger("doRoll");
             
             isRoll = true;
-            isRollReady = false;
-            
-            StartCoroutine(RollCoolTime(rollCoolTime));
+
             StartCoroutine(Rolling(0.833f));
         }
     }
@@ -122,41 +93,14 @@ public class Player : MonoBehaviour
         moveSpeed /= 1.5f;
     }
     
-    // 구르기 쿨타임 적용
-    IEnumerator RollCoolTime(float time)
-    {
-        yield return new WaitForSeconds(time);
-        
-        isRollReady = true;
-    }
 
     void Attack()
     {
-        if (aDown && isAttackReady && moveVec == Vector3.zero && !isRoll && !isHit && !isInvincible)
+        if (aDown)
         {
             anim.SetTrigger("comboAttack");
-            StopCoroutine("Attacking");
-            StartCoroutine("Attacking", 0.5f);
-            StartCoroutine(AttackDelay(attackDelay));
             //equipWeapon.Use();
         }
-    }
-    
-    // 공격 도중 재공격 및 다른 모션 불가
-    IEnumerator Attacking(float time)
-    {
-        isAttack = true;
-        yield return new WaitForSeconds(time);
-        isAttack = false;
-    }
-    
-    // 공격 딜레이
-    IEnumerator AttackDelay(float time)
-    {
-        isAttackReady = false;
-        yield return new WaitForSeconds(time);
-        
-        isAttackReady = true;
     }
 
     public void Hit(int damage)

@@ -11,6 +11,8 @@ enum MsgId {
 	S_DESPAWN = 3;
 	C_MOVE = 4;
 	S_MOVE = 5;
+	C_ACTION = 6;
+	S_ACTION = 7;
 }
 
 message S_EnterGame {
@@ -32,10 +34,22 @@ message S_Despawn{
 message C_Move{
 	PositionInfo posInfo =1;
 }
+
 message S_Move{
 	int32 playerId = 1;
 	PositionInfo posInfo = 2;
 }
+
+message C_Action{ 
+    ActionInfo actInfo = 1;
+}
+
+message S_Action{
+    int32 playerId = 1;
+    ActionInfo actInfo = 2;
+}
+
+
 message PlayerInfo{
 	int32 playerId = 1;
 	string name = 2;
@@ -47,6 +61,10 @@ message PositionInfo{
     float PosZ =2;
     float hAxis =3;
     float vAxis =4;
-    bool rAxis = 5;
-    bool aAxis = 6;
 }
+
+message ActionInfo{
+    bool rDown = 1;
+    bool aDown = 2;
+}
+

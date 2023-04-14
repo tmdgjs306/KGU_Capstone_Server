@@ -39,29 +39,21 @@ public class Managers : MonoBehaviour
     {
         if (s_instance == null)
         {
-			GameObject go = GameObject.Find("@Managers");
-            if (go == null)
+			GameObject gameObject = GameObject.Find("@Managers");
+            if (gameObject == null)
             {
-                go = new GameObject { name = "@Managers" };
-                go.AddComponent<Managers>();
+                gameObject = new GameObject { name = "@Managers" };
+                gameObject.AddComponent<Managers>();
             }
-
-            DontDestroyOnLoad(go);
-            s_instance = go.GetComponent<Managers>();
-
-           s_instance._network.Init();
+            DontDestroyOnLoad(gameObject);
+            s_instance = gameObject.GetComponent<Managers>();
+            s_instance._network.Init();
         }		
 	}
+    
     public static void Clear()
     {
         Scene.Clear();
         Pool.Clear();
     }
-
-    IEnumerator Entity_Pos()
-    {
-        yield return new WaitForSeconds(0.2f);
-        
-    }
-    
 }

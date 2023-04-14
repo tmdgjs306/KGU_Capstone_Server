@@ -46,6 +46,7 @@ namespace ServerCore
 				session.Start(args.ConnectSocket);
 				session.OnConnected(args.RemoteEndPoint);
 			}
+
 			else
 			{
 				Console.WriteLine($"OnConnectCompleted Fail: {args.SocketError}");

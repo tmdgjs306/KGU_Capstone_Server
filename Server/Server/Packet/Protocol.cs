@@ -41,12 +41,12 @@ namespace Google.Protobuf.Protocol {
             "EgwKBHR5cGUYAiABKAUSJwoHcG9zSW5mbxgDIAEoCzIWLlByb3RvY29sLlBv",
             "c2l0aW9uSW5mbyJICgxQb3NpdGlvbkluZm8SDAoEUG9zWBgBIAEoAhIMCgRQ",
             "b3NaGAIgASgCEg0KBWhBeGlzGAMgASgCEg0KBXZBeGlzGAQgASgCIioKCkFj",
-            "dGlvbkluZm8SDQoFckRvd24YASABKAgSDQoFYURvd24YAiABKAgqmgEKBU1z",
-            "Z0lkEhAKDFNfRU5URVJfR0FNRRAAEhAKDFNfTEVBVkVfR0FNRRABEhcKE1Nf",
-            "T1RIRVJQTEFZRVJfU1BBV04QAhIRCg1TX0VORU1ZX1NQQVdOEAMSDQoJU19E",
-            "RVNQQVdOEAQSCgoGQ19NT1ZFEAUSCgoGU19NT1ZFEAYSDAoIQ19BQ1RJT04Q",
-            "BxIMCghTX0FDVElPThAIQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9jb2xi",
-            "BnByb3RvMw=="));
+            "dGlvbkluZm8SDQoFckRvd24YASABKAgSDQoFYURvd24YAiABKAgqmwEKBU1z",
+            "Z0lkEhAKDFNfRU5URVJfR0FNRRAAEhAKDFNfTEVBVkVfR0FNRRABEhgKFFNf",
+            "T1RIRVJfUExBWUVSX1NQQVdOEAISEQoNU19FTkVNWV9TUEFXThADEg0KCVNf",
+            "REVTUEFXThAEEgoKBkNfTU9WRRAFEgoKBlNfTU9WRRAGEgwKCENfQUNUSU9O",
+            "EAcSDAoIU19BQ1RJT04QCEIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29s",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -72,7 +72,7 @@ namespace Google.Protobuf.Protocol {
   public enum MsgId {
     [pbr::OriginalName("S_ENTER_GAME")] SEnterGame = 0,
     [pbr::OriginalName("S_LEAVE_GAME")] SLeaveGame = 1,
-    [pbr::OriginalName("S_OTHERPLAYER_SPAWN")] SOtherplayerSpawn = 2,
+    [pbr::OriginalName("S_OTHER_PLAYER_SPAWN")] SOtherPlayerSpawn = 2,
     [pbr::OriginalName("S_ENEMY_SPAWN")] SEnemySpawn = 3,
     [pbr::OriginalName("S_DESPAWN")] SDespawn = 4,
     [pbr::OriginalName("C_MOVE")] CMove = 5,

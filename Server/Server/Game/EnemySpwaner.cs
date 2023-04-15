@@ -38,9 +38,12 @@ namespace Server.Game
             Dictionary<int, GameRoom> rooms = RoomManager.Instance.FindAll();
             List<int> list = new List<int>(rooms.Keys);
 
+          
+
             //모든 방에 적 생성 패킷 전송
-            for(int i=0; i<rooms.Count; i++)
+            for (int i=0; i<rooms.Count; i++)
             {
+                Console.WriteLine("적 생성!!!");
                 GameRoom g = rooms[list[i]];
                 g.Broadcast(enemySpawnPacket);
             }

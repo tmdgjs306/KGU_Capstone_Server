@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server;
+using Server.Game;
 using ServerCore;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Text;
 
 class PacketHandler
 {
+    static EnemySpwaner spwaner = new EnemySpwaner();
     public static void C_MoveHandler(PacketSession session, IMessage packet)
     {
         C_Move movePacket = packet as C_Move;
         ClientSession clientSession = session as ClientSession;
-
         if (clientSession.MyPlayer == null)
             return;
         if (clientSession.MyPlayer.Room == null)
@@ -43,8 +44,6 @@ class PacketHandler
         S_Action resActionPacket = new S_Action();
         resActionPacket.PlayerId = clientSession.MyPlayer.Info.PlayerId;
         resActionPacket.ActInfo = actPacket.ActInfo;
-
         clientSession.MyPlayer.Room.Broadcast(resActionPacket);
-
     }
 }

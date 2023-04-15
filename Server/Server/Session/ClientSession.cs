@@ -16,6 +16,7 @@ namespace Server
 	{
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
+		EnemySpwaner spwaner;
 
 		public void Send(IMessage packet)
         {

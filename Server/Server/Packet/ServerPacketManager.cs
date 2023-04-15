@@ -55,7 +55,6 @@ class PacketManager
 			Action<PacketSession, IMessage> action = null;
 			if (_handler.TryGetValue(id, out action))
 				action.Invoke(session, pkt);
-			
 		}
 	}
 

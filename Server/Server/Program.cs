@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
@@ -18,11 +19,23 @@ namespace Server
 	{
 		static Listener _listener = new Listener();
 		static EnemySpwaner spwaner = new EnemySpwaner();
+		static int spawnId = 1;
+		static System.Timers.Timer aTimer;
 		static void FlushRoom()
 		{
 			JobTimer.Instance.Push(FlushRoom, 250);
 		}
-
+		private static void SetTimer()
+        {
+			aTimer = new System.Timers.Timer(5000);
+			aTimer.Elapsed += OnTimerEvent;
+			aTimer.AutoReset = true;
+			aTimer.Enabled = true;
+        }
+		private static void OnTimerEvent(Object source, ElapsedEventArgs e)
+        {
+			spwaner.spawn(spawnId++);
+        }
 		static void Main(string[] args)
 		{
 			RoomManager.Instance.Add();
@@ -38,11 +51,14 @@ namespace Server
 
 			//FlushRoom();
 			JobTimer.Instance.Push(FlushRoom);
-			spwaner.spawn(1);
+			SetTimer();
 			while (true)
 			{
 				JobTimer.Instance.Flush();
 			}
+			aTimer.Stop();
+			aTimer.Dispose();
 		}
 	}
 }
+

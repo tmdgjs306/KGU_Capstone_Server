@@ -17,7 +17,7 @@ namespace Server
 	class Program
 	{
 		static Listener _listener = new Listener();
-
+		static EnemySpwaner spwaner = new EnemySpwaner();
 		static void FlushRoom()
 		{
 			JobTimer.Instance.Push(FlushRoom, 250);
@@ -38,7 +38,7 @@ namespace Server
 
 			//FlushRoom();
 			JobTimer.Instance.Push(FlushRoom);
-
+			spwaner.spawn(1);
 			while (true)
 			{
 				JobTimer.Instance.Flush();

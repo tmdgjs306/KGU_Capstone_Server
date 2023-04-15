@@ -45,5 +45,9 @@ namespace Server.Game
             }
         }
 
+        public Dictionary<int,GameRoom> FindAll()
+        {
+            return _rooms;
+        }
     }
 }

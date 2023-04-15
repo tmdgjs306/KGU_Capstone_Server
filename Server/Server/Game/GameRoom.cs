@@ -30,7 +30,7 @@ namespace Server.Game
                     enterPacket.Player = newPlayer.Info;
                     newPlayer.Session.Send(enterPacket);
 
-                    S_Spawn spawnPacket = new S_Spawn();
+                    S_OtherPlayerSpawn spawnPacket = new S_OtherPlayerSpawn();
                     foreach (Player p in _players) 
                     {
                         if (newPlayer != p)
@@ -41,7 +41,7 @@ namespace Server.Game
 
                 // 타인에게 정보 전송
                 {
-                    S_Spawn spawnPacket = new S_Spawn();
+                    S_OtherPlayerSpawn spawnPacket = new S_OtherPlayerSpawn();
                     spawnPacket.Players.Add(newPlayer.Info);
                     foreach (Player p in _players)
                     {
@@ -83,6 +83,7 @@ namespace Server.Game
                 }
             }
         }
+
         public void Broadcast(IMessage packet)
         {
             lock (_lock)

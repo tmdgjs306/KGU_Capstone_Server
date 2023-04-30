@@ -13,22 +13,50 @@ namespace Server.Game
     {
         object _lock = new object();
         public int RoomId { get; set; }
-
+        int time = 90;
         List<Player> _players = new List<Player>();
         EnemyManager enemyManager = new EnemyManager();
         static System.Timers.Timer spawnTimer;
-
+        static System.Timers.Timer gameEndTimer;
+        static System.Timers.Timer clockTimer;
         public void SetTimer()
         {
+            // 스폰 패킷 생성 주기 설정
             spawnTimer = new System.Timers.Timer(2000);
-            spawnTimer.Elapsed += OnTimerEvent;
+            spawnTimer.Elapsed += SpawnEvent;
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
+
+            gameEndTimer = new System.Timers.Timer(90000);
+            gameEndTimer.Elapsed += EndGameEvent;
+            gameEndTimer.AutoReset = true;
+            gameEndTimer.Enabled = true;
+
+            clockTimer = new System.Timers.Timer(1000);
+            clockTimer.Elapsed += clockEvent;
+            clockTimer.AutoReset = true;
+            clockTimer.Enabled = true;
         }
-        private void OnTimerEvent(Object source, ElapsedEventArgs e)
+
+        private void clockEvent(Object source, ElapsedEventArgs e)
+        {
+            S_TimeInfo timePacket = new S_TimeInfo();
+            timePacket.Second = time;
+            time--;
+            Broadcast(timePacket);
+        }
+
+        private void SpawnEvent(Object source, ElapsedEventArgs e)
         {
             EnemySpawn();
         }
+
+        private void EndGameEvent(Object source, ElapsedEventArgs e)
+        {
+            //TODO
+            //스테이지 이동 기능 구현 
+        }
+
         public void EnterGame(Player newPlayer)
         {
             if (newPlayer == null)
@@ -111,7 +139,7 @@ namespace Server.Game
             float z = 5+rand.Next(-30, 30);
             S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
             EnemyInfo enemyInfo = new EnemyInfo();
-            PositionInfo pos = new PositionInfo();
+            EnemyPositionInfo pos = new EnemyPositionInfo();
 
             // 위치 설정 
             pos.PosX = x;

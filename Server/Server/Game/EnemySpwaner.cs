@@ -22,7 +22,7 @@ namespace Server.Game
             float z = 5 + rand.Next(-10, 10);
             S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
             EnemyInfo enemyInfo = new EnemyInfo();
-            PositionInfo pos = new PositionInfo();
+            EnemyPositionInfo pos = new EnemyPositionInfo();
             // 위치 설정 
             pos.PosX = x;
             pos.PosZ = z;

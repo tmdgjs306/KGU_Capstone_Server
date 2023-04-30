@@ -18,9 +18,6 @@ namespace Server
 	class Program
 	{
 		static Listener _listener = new Listener();
-		static EnemySpwaner spwaner = new EnemySpwaner();
-		static int spawnId = 1;
-		static System.Timers.Timer aTimer;
 		static void FlushRoom()
 		{
 			JobTimer.Instance.Push(FlushRoom, 250);

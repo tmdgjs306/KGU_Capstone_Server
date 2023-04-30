@@ -9,9 +9,9 @@ using System.Text;
 
 class PacketHandler
 {
-    public static void C_MoveHandler(PacketSession session, IMessage packet)
+    public static void C_PlayerMoveHandler(PacketSession session, IMessage packet)
     {
-        C_Move movePacket = packet as C_Move;
+        C_PlayerMove movePacket = packet as C_PlayerMove;
         ClientSession clientSession = session as ClientSession;
         if (clientSession.MyPlayer == null)
             return;
@@ -23,15 +23,15 @@ class PacketHandler
         //info.PosInfo = movePacket.PosInfo;
 
         // 다른 플레이어한테도 알려준다
-        S_Move resMovePacket = new S_Move();
+        S_PlayerMove resMovePacket = new S_PlayerMove();
         resMovePacket.PlayerId = clientSession.MyPlayer.Info.PlayerId;
         resMovePacket.PosInfo = movePacket.PosInfo;
        
         clientSession.MyPlayer.Room.Broadcast(resMovePacket,resMovePacket.PlayerId);
     }
-    public static void C_ActionHandler(PacketSession session, IMessage packet)
+    public static void C_PlayerActionHandler(PacketSession session, IMessage packet)
     {
-        C_Action actPacket = packet as C_Action;
+        C_PlayerAction actPacket = packet as C_PlayerAction;
         ClientSession clientSession = session as ClientSession;
 
         if (clientSession.MyPlayer == null)
@@ -40,9 +40,13 @@ class PacketHandler
             return;
 
         // 다른 플레이어들에게 액션 처리 전송
-        S_Action resActionPacket = new S_Action();
+        S_PlayerAction resActionPacket = new S_PlayerAction();
         resActionPacket.PlayerId = clientSession.MyPlayer.Info.PlayerId;
         resActionPacket.ActInfo = actPacket.ActInfo;
         clientSession.MyPlayer.Room.Broadcast(resActionPacket,resActionPacket.PlayerId);
+    }
+    public static void C_EnemyMoveHandler(PacketSession session, IMessage packet)
+    {
+
     }
 }

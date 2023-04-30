@@ -7,7 +7,7 @@ namespace Server.Game
 {
     public class Enemy
     {
-        public EnemyInfo enemyInfo { get; set; } = new EnemyInfo() { PosInfo = new PositionInfo() };
+        public EnemyInfo enemyInfo { get; set; } = new EnemyInfo() { PosInfo = new EnemyPositionInfo() };
         public GameRoom Room { get; set; }
         public ClientSession Session { get; set; }
     }

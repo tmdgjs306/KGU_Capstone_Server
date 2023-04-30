@@ -13,7 +13,7 @@ namespace Server.Game
     {
         object _lock = new object();
         public int RoomId { get; set; }
-        int time = 90;
+        public int time;
         List<Player> _players = new List<Player>();
         EnemyManager enemyManager = new EnemyManager();
         static System.Timers.Timer spawnTimer;
@@ -41,6 +41,7 @@ namespace Server.Game
         private void clockEvent(Object source, ElapsedEventArgs e)
         {
             S_TimeInfo timePacket = new S_TimeInfo();
+            Console.WriteLine($"{time}");
             timePacket.Now = time;
             time--;
             Broadcast(timePacket);

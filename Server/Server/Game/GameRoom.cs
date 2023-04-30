@@ -149,7 +149,18 @@ namespace Server.Game
             enemyInfo.EnemyId = enemyManager._enemyId++;
             enemyInfo.Type = 1;
             enemyInfo.PosInfo = pos;
-
+            double temp = 9999999;
+            Player p1 = null;
+            foreach(Player p in _players)
+            {
+                double dist = Math.Pow(x - p.Info.PosInfo.PosX, 2) + Math.Pow(z - p.Info.PosInfo.PosZ, 2);
+                if (temp> dist)
+                {
+                    p1 = p;
+                    temp = dist;
+                }
+            }
+            enemyInfo.PlayerId = p1.Info.PlayerId;
             enemySpawnPacket.Enemys.Add(enemyInfo);
             Broadcast(enemySpawnPacket);
         }

@@ -66,6 +66,10 @@ namespace Server.Game
             {
                 _players.Add(newPlayer);
                 newPlayer.Room = this;
+                if(_players.Count==1)
+                {
+                    time = 90;
+                }
                 // 자신에게 정보 전송
                 {
                     S_EnterGame enterPacket = new S_EnterGame();

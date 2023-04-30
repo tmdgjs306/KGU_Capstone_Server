@@ -23,7 +23,6 @@ namespace Server.Game
                 _rooms.Add(_roomId, gameRoom);
                 _roomId++;
                 gameRoom.SetTimer();
-                gameRoom.time = 90;
             }
             return gameRoom;
         }

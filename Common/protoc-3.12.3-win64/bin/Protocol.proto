@@ -49,7 +49,6 @@ message S_Action{
     ActionInfo actInfo = 2;
 }
 
-
 message PlayerInfo{
 	int32 playerId = 1;
 	string name = 2;

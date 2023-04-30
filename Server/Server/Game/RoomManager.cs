@@ -22,6 +22,7 @@ namespace Server.Game
                 gameRoom.RoomId = _roomId;
                 _rooms.Add(_roomId, gameRoom);
                 _roomId++;
+                gameRoom.SetTimer();
             }
             return gameRoom;
         }

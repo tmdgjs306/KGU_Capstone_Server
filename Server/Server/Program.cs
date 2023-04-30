@@ -25,20 +25,6 @@ namespace Server
 		{
 			JobTimer.Instance.Push(FlushRoom, 250);
 		}
-
-		private static void SetTimer()
-        {
-			aTimer = new System.Timers.Timer(5000);
-			aTimer.Elapsed += OnTimerEvent;
-			aTimer.AutoReset = true;
-			aTimer.Enabled = true;
-        }
-
-		private static void OnTimerEvent(Object source, ElapsedEventArgs e)
-        {
-			spwaner.spawn(spawnId++);
-        }
-
 		static void Main(string[] args)
 		{
 			RoomManager.Instance.Add();
@@ -54,14 +40,10 @@ namespace Server
 
 			//FlushRoom();
 			JobTimer.Instance.Push(FlushRoom);
-			SetTimer();
 			while (true)
 			{
 				JobTimer.Instance.Flush();
 			}
-
-			aTimer.Stop();
-			aTimer.Dispose();
 		}
 	}
 }

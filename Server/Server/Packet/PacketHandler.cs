@@ -9,7 +9,6 @@ using System.Text;
 
 class PacketHandler
 {
-    static EnemySpwaner spwaner = new EnemySpwaner();
     public static void C_MoveHandler(PacketSession session, IMessage packet)
     {
         C_Move movePacket = packet as C_Move;

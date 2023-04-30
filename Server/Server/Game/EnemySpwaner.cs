@@ -15,7 +15,7 @@ namespace Server.Game
 
         }
 
-        public void spawn(int id)
+        public void spawn(GameRoom g, int id)
         {
             Random rand = new Random();
             float x = 5 + rand.Next(-10, 10);
@@ -33,20 +33,7 @@ namespace Server.Game
             enemyInfo.PosInfo = pos;
 
             enemySpawnPacket.Enemys.Add(enemyInfo);
-
-            //전체 방 리스트 불러옴 
-            Dictionary<int, GameRoom> rooms = RoomManager.Instance.FindAll();
-            List<int> list = new List<int>(rooms.Keys);
-
-          
-
-            //모든 방에 적 생성 패킷 전송
-            for (int i=0; i<rooms.Count; i++)
-            {
-                Console.WriteLine("적 생성!!!");
-                GameRoom g = rooms[list[i]];
-                g.Broadcast(enemySpawnPacket,-1);
-            }
+            g.Broadcast(enemySpawnPacket);
         }
     }
 }

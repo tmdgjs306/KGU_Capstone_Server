@@ -22,10 +22,12 @@ class PacketManager
 	public Action<PacketSession, IMessage, ushort> CustomHandler { get; set; }
 	public void Register()
 	{		
-		_onRecv.Add((ushort)MsgId.CMove, MakePacket<C_Move>);
-		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);		
-		_onRecv.Add((ushort)MsgId.CAction, MakePacket<C_Action>);
-		_handler.Add((ushort)MsgId.CAction, PacketHandler.C_ActionHandler);
+		_onRecv.Add((ushort)MsgId.CEnemyMove, MakePacket<C_EnemyMove>);
+		_handler.Add((ushort)MsgId.CEnemyMove, PacketHandler.C_EnemyMoveHandler);		
+		_onRecv.Add((ushort)MsgId.CPlayerMove, MakePacket<C_PlayerMove>);
+		_handler.Add((ushort)MsgId.CPlayerMove, PacketHandler.C_PlayerMoveHandler);		
+		_onRecv.Add((ushort)MsgId.CPlayerAction, MakePacket<C_PlayerAction>);
+		_handler.Add((ushort)MsgId.CPlayerAction, PacketHandler.C_PlayerActionHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
@@ -55,6 +57,7 @@ class PacketManager
 			Action<PacketSession, IMessage> action = null;
 			if (_handler.TryGetValue(id, out action))
 				action.Invoke(session, pkt);
+			
 		}
 	}
 

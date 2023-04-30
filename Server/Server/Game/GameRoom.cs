@@ -41,7 +41,7 @@ namespace Server.Game
         private void clockEvent(Object source, ElapsedEventArgs e)
         {
             S_TimeInfo timePacket = new S_TimeInfo();
-            timePacket.Second = time;
+            timePacket.Now = time;
             time--;
             Broadcast(timePacket);
         }

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "aM/GF7WL06Rc2YoDTozwWuOWWW5n8eWFFtUsu0sxHPQi57FzDt3lFgUh1OFjm3I/Go3dYcdRLWp+KnYlrMInYQ==",
+  "success": true,
+  "projectFilePath": "C:\\Capstone_Main\\Server\\Server\\Server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\tmdgj\\.nuget\\packages\\google.protobuf\\3.12.3\\google.protobuf.3.12.3.nupkg.sha512",
+    "C:\\Users\\tmdgj\\.nuget\\packages\\system.memory\\4.5.2\\system.memory.4.5.2.nupkg.sha512"
+  ],
+  "logs": []
+}

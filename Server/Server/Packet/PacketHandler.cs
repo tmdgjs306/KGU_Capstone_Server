@@ -9,6 +9,7 @@ using System.Text;
 
 class PacketHandler
 {
+    #region 이동 핸들러
     public static void C_PlayerMoveHandler(PacketSession session, IMessage packet)
     {
         C_PlayerMove movePacket = packet as C_PlayerMove;
@@ -18,17 +19,19 @@ class PacketHandler
         if (clientSession.MyPlayer.Room == null)
             return;
 
-        // 서버에서 좌표이동 
-        //PlayerInfo info = clientSession.MyPlayer.Info;
-        //info.PosInfo = movePacket.PosInfo;
+        //서버 내부 좌표이동 
+        PlayerInfo info = clientSession.MyPlayer.Info;
+        info.PosInfo = movePacket.PosInfo;
 
-        // 다른 플레이어한테도 알려준다
+        // 다른 플레이어에게 이동 좌표 전송 
         S_PlayerMove resMovePacket = new S_PlayerMove();
         resMovePacket.PlayerId = clientSession.MyPlayer.Info.PlayerId;
         resMovePacket.PosInfo = movePacket.PosInfo;
        
         clientSession.MyPlayer.Room.Broadcast(resMovePacket,resMovePacket.PlayerId);
     }
+    #endregion
+    #region 액션 핸들러
     public static void C_PlayerActionHandler(PacketSession session, IMessage packet)
     {
         C_PlayerAction actPacket = packet as C_PlayerAction;
@@ -45,8 +48,10 @@ class PacketHandler
         resActionPacket.ActInfo = actPacket.ActInfo;
         clientSession.MyPlayer.Room.Broadcast(resActionPacket,resActionPacket.PlayerId);
     }
+    #endregion
     public static void C_EnemyMoveHandler(PacketSession session, IMessage packet)
     {
-
+        // TODO
+        // 서버에서 몬스터 이동 후 좌표 브로드캐스트 
     }
 }

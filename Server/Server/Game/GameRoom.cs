@@ -16,9 +16,12 @@ namespace Server.Game
         public int time;
         List<Player> _players = new List<Player>();
         EnemyManager enemyManager = new EnemyManager();
+
         static System.Timers.Timer spawnTimer;
         static System.Timers.Timer gameEndTimer;
         static System.Timers.Timer clockTimer;
+        static System.Timers.Timer enemyMoveTimer;
+        // 게임 진행시 사용되는 타이머 설정
         public void SetTimer()
         {
             // 스폰 패킷 생성 주기 설정
@@ -27,18 +30,45 @@ namespace Server.Game
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
 
+            //게임 클리어 시간 설정 
             gameEndTimer = new System.Timers.Timer(90000);
             gameEndTimer.Elapsed += EndGameEvent;
             gameEndTimer.AutoReset = true;
             gameEndTimer.Enabled = true;
 
+            //사용자 시간 동기화
             clockTimer = new System.Timers.Timer(1000);
-            clockTimer.Elapsed += clockEvent;
+            clockTimer.Elapsed += ClockEvent;
             clockTimer.AutoReset = true;
             clockTimer.Enabled = true;
+
+            //몬스터 이동
+            enemyMoveTimer = new System.Timers.Timer(100);
+            enemyMoveTimer.Elapsed += EnemyMoveEvent;
+            enemyMoveTimer.AutoReset = true;
+            enemyMoveTimer.Enabled = true;
         }
 
-        private void clockEvent(Object source, ElapsedEventArgs e)
+        // 0,1초 마다 적 이동 명령 전송 
+        private void EnemyMoveEvent(Object source, ElapsedEventArgs e)
+        {
+            foreach (Enemy  T in enemyManager._enemys.Values)
+            {
+                S_EnemyMove enemyMovePacket = new S_EnemyMove();
+                Player Target = PlayerManager.Instance.Find(T.enemyInfo.PlayerId);
+                EnemyPositionInfo ePos = new EnemyPositionInfo();
+
+                ePos.PosX = Target.Info.PosInfo.PosX;
+                ePos.PosZ = Target.Info.PosInfo.PosZ;
+
+                enemyMovePacket.Posinfo = ePos;
+                enemyMovePacket.EnemyId = T.enemyInfo.EnemyId;
+                Broadcast(enemyMovePacket);
+            }
+        }
+
+        // 1초마다 시간 동기화
+        private void ClockEvent(Object source, ElapsedEventArgs e)
         {
             S_TimeInfo timePacket = new S_TimeInfo();
             Console.WriteLine($"{time}");
@@ -47,8 +77,13 @@ namespace Server.Game
             Broadcast(timePacket);
         }
 
+        // 스폰 주기마다 몬스터 생성 
         private void SpawnEvent(Object source, ElapsedEventArgs e)
         {
+            // TODO 
+            // 몬스터 일정 마리 수 이상일 시 생성 중단 
+            if (enemyManager._enemys.Count >= 200)
+                return;
             EnemySpawn();
         }
 
@@ -56,6 +91,7 @@ namespace Server.Game
         {
             //TODO
             //스테이지 이동 기능 구현 
+
         }
 
         public void EnterGame(Player newPlayer)
@@ -66,11 +102,14 @@ namespace Server.Game
             {
                 _players.Add(newPlayer);
                 newPlayer.Room = this;
+
+                //만약 사용자가 처음 입장 하였다면 시간을 90초로 설정 
                 if(_players.Count==1)
                 {
                     time = 90;
                 }
-                // 자신에게 정보 전송
+
+                // 자신에게 정보 전송 { 다른 플레이어 정보, 몬스터 스폰 정보 }
                 {
                     S_EnterGame enterPacket = new S_EnterGame();
                     enterPacket.Player = newPlayer.Info;
@@ -90,7 +129,7 @@ namespace Server.Game
                     newPlayer.Session.Send(enemySpawnPacket);
                 }
 
-                // 타인에게 정보 전송
+                // 타인에게 정보 전송 { 신규 입장한 플레이어 정보  }
                 {
                     S_OtherPlayerSpawn spawnPacket = new S_OtherPlayerSpawn();
                     spawnPacket.Players.Add(newPlayer.Info);
@@ -102,6 +141,7 @@ namespace Server.Game
                         }
                     }
                 }
+
             }
         }
 
@@ -112,8 +152,6 @@ namespace Server.Game
                 Player player = _players.Find(p => p.Info.PlayerId == PlayerId);
                 if (player == null)
                     return;
-
-                _players.Remove(player);
                 player.Room = null;
 
                 //자신에게 정보 전송
@@ -122,7 +160,7 @@ namespace Server.Game
                     player.Session.Send(leavePacket);
                 }
 
-                //타인에게 정보 전송
+                //타인에게 정보 전송 
                 {
                     S_Despawn despawnPacket = new S_Despawn();
                     despawnPacket.PlayerIds.Add(player.Info.PlayerId);
@@ -132,6 +170,7 @@ namespace Server.Game
                             p.Session.Send(despawnPacket);
                     }
                 }
+                _players.Remove(player);
             }
         }
 
@@ -156,6 +195,8 @@ namespace Server.Game
             enemyInfo.PosInfo = pos;
             double temp = 9999999;
             Player p1 = null;
+
+            // 생성된 위치에서 가장 가까운 플레이어를 타겟으로 설정 
             foreach(Player p in _players)
             {
                 double dist = Math.Pow(x - p.Info.PosInfo.PosX, 2) + Math.Pow(z - p.Info.PosInfo.PosZ, 2);
@@ -166,6 +207,7 @@ namespace Server.Game
                 }
             }
             enemyInfo.PlayerId = p1.Info.PlayerId;
+            // enemyID, Position, playerID 정보 삽입 
             enemySpawnPacket.Enemys.Add(enemyInfo);
             Broadcast(enemySpawnPacket);
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,15 +14,15 @@ namespace Server.Game
 
         public int _enemyId = 1; //TODO
 
-        public Enemy Add()
+        public void Add()
         {
             Enemy enemy = new Enemy();
             lock (_lock)
             {
-                enemy.enemyInfo.EnemyId = _enemyId++;
                 _enemys.Add(_enemyId, enemy);
+                enemy.enemyInfo.EnemyId = _enemyId++;
             }
-            return enemy;
+            
         }
 
         public bool Remove(int enemyId)

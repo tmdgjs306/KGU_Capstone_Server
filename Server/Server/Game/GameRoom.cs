@@ -16,6 +16,9 @@ namespace Server.Game
         public int time;
         List<Player> _players = new List<Player>();
         EnemyManager enemyManager = new EnemyManager();
+        Random rand = new Random();
+        int x = 0;
+        int z = 0;
         //List<Enemy> _enemies = new List<Enemy>();
         static System.Timers.Timer spawnTimer;
         static System.Timers.Timer gameEndTimer;
@@ -109,7 +112,10 @@ namespace Server.Game
             {
                 _players.Add(newPlayer);
                 newPlayer.Room = this;
-
+                newPlayer.Info.PosInfo.PosX = x;
+                newPlayer.Info.PosInfo.PosZ = z;
+                x += 5;
+                z += 5;
                 //만약 사용자가 처음 입장 하였다면 시간을 90초로 설정 
                 if (_players.Count == 1)
                 {
@@ -117,7 +123,6 @@ namespace Server.Game
                     S_HostUser hostPacket = new S_HostUser();
                     newPlayer.Session.Send(hostPacket);
                     hostId = newPlayer.Info.PlayerId;
-
                 }
 
                 // 자신에게 정보 전송 { 다른 플레이어 정보, 몬스터 스폰 정보 }
@@ -130,6 +135,7 @@ namespace Server.Game
                     {
                         if (newPlayer != p)
                             spawnPacket.Players.Add(p.Info);
+                        
                     }
                     S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
                     foreach (Enemy e in EnemyManager.Instance._enemys.Values)
@@ -189,7 +195,6 @@ namespace Server.Game
         private void EnemySpawn()
         {
             // 적 좌표 랜덤 설정
-            Random rand = new Random();
             float x = 5 + rand.Next(-30, 30);
             float z = 5 + rand.Next(-30, 30);
             S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
@@ -257,6 +262,7 @@ namespace Server.Game
             }
         }
 
+        //호스트 제외 패킷 전송 
         public void MoveBroadcast(IMessage packet)
         {
             lock (_lock)
@@ -269,6 +275,7 @@ namespace Server.Game
                 }
             }
         }
+
 
     }
 }

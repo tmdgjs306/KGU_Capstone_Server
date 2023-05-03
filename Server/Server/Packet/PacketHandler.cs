@@ -52,6 +52,12 @@ class PacketHandler
     public static void C_EnemyMoveHandler(PacketSession session, IMessage packet)
     {
         // TODO
-        // 서버에서 몬스터 이동 후 좌표 브로드캐스트 
+        // 서버에서 몬스터 이동
+        C_EnemyMove eMovePacket = packet as C_EnemyMove;
+        ClientSession clientSession = session as ClientSession;
+        Enemy enemy = EnemyManager.Instance.Find(eMovePacket.EnemyId);
+
+        enemy.enemyInfo.PosInfo = eMovePacket.Posinfo;
+        
     }
 }

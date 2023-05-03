@@ -7,7 +7,7 @@ namespace Server.Game
 {
     class EnemyManager
     {
-
+        public static EnemyManager Instance { get; } = new EnemyManager();
         object _lock = new object();
 
         public Dictionary<int, Enemy> _enemys = new Dictionary<int, Enemy>();
@@ -23,6 +23,14 @@ namespace Server.Game
                 enemy.enemyInfo.EnemyId = _enemyId++;
             }
             
+        }
+
+        public void Add(Enemy enemy)
+        {
+            lock (_lock)
+            {
+                _enemys.Add(_enemyId, enemy);
+            }
         }
 
         public bool Remove(int enemyId)

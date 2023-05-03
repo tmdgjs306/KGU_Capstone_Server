@@ -19,8 +19,9 @@ namespace Server.Game
             Enemy enemy = new Enemy();
             lock (_lock)
             {
+                enemy.enemyInfo.EnemyId = _enemyId;
                 _enemys.Add(_enemyId, enemy);
-                enemy.enemyInfo.EnemyId = _enemyId++;
+                _enemyId++;
             }
             
         }
@@ -30,6 +31,7 @@ namespace Server.Game
             lock (_lock)
             {
                 _enemys.Add(_enemyId, enemy);
+                enemy.enemyInfo.EnemyId = _enemyId++;
             }
         }
 

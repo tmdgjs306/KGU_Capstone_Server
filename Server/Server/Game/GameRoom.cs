@@ -16,7 +16,7 @@ namespace Server.Game
         public int time;
         List<Player> _players = new List<Player>();
         EnemyManager enemyManager = new EnemyManager();
-        List<Enemy> _enemies = new List<Enemy>();
+        //List<Enemy> _enemies = new List<Enemy>();
         static System.Timers.Timer spawnTimer;
         static System.Timers.Timer gameEndTimer;
         static System.Timers.Timer clockTimer;
@@ -45,7 +45,7 @@ namespace Server.Game
             clockTimer.Enabled = true;
 
             //몬스터 이동
-            enemyMoveTimer = new System.Timers.Timer(500);
+            enemyMoveTimer = new System.Timers.Timer(100);
             enemyMoveTimer.Elapsed += EnemyMoveEvent;
             enemyMoveTimer.AutoReset = true;
             enemyMoveTimer.Enabled = true;
@@ -54,7 +54,7 @@ namespace Server.Game
         // 0,1초 마다 적 이동 명령 전송 
         private void EnemyMoveEvent(Object source, ElapsedEventArgs e)
         {
-            foreach (Enemy T in _enemies)
+            foreach (Enemy T in EnemyManager.Instance._enemys.Values)
             {
                 S_EnemyMove enemyMovePacket = new S_EnemyMove();
                 //Player Target = PlayerManager.Instance.Find(T.enemyInfo.PlayerId);
@@ -86,8 +86,8 @@ namespace Server.Game
         {
             // TODO 
             // 몬스터 일정 마리 수 이상일 시 생성 중단
-            Console.WriteLine(_enemies.Count);
-            if (_enemies.Count >= 100)
+            int Count = EnemyManager.Instance._enemys.Count;
+            if (Count >= 100)
             {
                 return;
             }
@@ -132,7 +132,7 @@ namespace Server.Game
                             spawnPacket.Players.Add(p.Info);
                     }
                     S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
-                    foreach (Enemy e in _enemies)
+                    foreach (Enemy e in EnemyManager.Instance._enemys.Values)
                     {
                         enemySpawnPacket.Enemys.Add(e.enemyInfo);
                     }
@@ -201,7 +201,7 @@ namespace Server.Game
             pos.PosZ = z;
 
             // 적 정보 설정 
-            enemyInfo.EnemyId = enemyManager._enemyId++;
+            //enemyInfo.EnemyId = 
             enemyInfo.Type = 1;
             enemyInfo.PosInfo = pos;
 
@@ -224,7 +224,7 @@ namespace Server.Game
 
             Enemy enemy = new Enemy();
             enemy.enemyInfo = enemyInfo;
-            _enemies.Add(enemy);
+            //_enemies.Add(enemy);
             EnemyManager.Instance.Add(enemy);
             enemySpawnPacket.Enemys.Add(enemyInfo);
             Broadcast(enemySpawnPacket);

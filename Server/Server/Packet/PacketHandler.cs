@@ -51,6 +51,7 @@ class PacketHandler
     }
     #endregion
 
+    #region 적 이동 핸들러
     public static void C_EnemyMoveHandler(PacketSession session, IMessage packet)
     {
         // TODO
@@ -62,6 +63,7 @@ class PacketHandler
         enemy.enemyInfo.PosInfo = eMovePacket.Posinfo;
         
     }
+    #endregion
 
     #region 플레이어 삭제 핸들러 
     public static void C_PlayerDestroyHandler(PacketSession session, IMessage packet)

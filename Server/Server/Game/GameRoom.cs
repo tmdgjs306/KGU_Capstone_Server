@@ -17,8 +17,10 @@ namespace Server.Game
         List<Player> _players = new List<Player>();
         EnemyManager enemyManager = new EnemyManager();
         Random rand = new Random();
+
         int x = 0;
         int z = 0;
+
         //List<Enemy> _enemies = new List<Enemy>();
         static System.Timers.Timer spawnTimer;
         static System.Timers.Timer gameEndTimer;
@@ -71,6 +73,7 @@ namespace Server.Game
                 S_EnemyTargetReset resetPacket = new S_EnemyTargetReset();
                 float x = enemy.enemyInfo.PosInfo.PosX;
                 float z = enemy.enemyInfo.PosInfo.PosZ;
+
                 // 현재 위치에서 가장 가까운 플레이어를 타겟으로 설정 
                 foreach (Player p in _players)
                 {
@@ -81,6 +84,7 @@ namespace Server.Game
                         temp = dist;
                     }
                 }
+
                 // 만약 타겟이 변경 되었다면 알려준다
                 if (p1.Info.PlayerId != enemy.enemyInfo.PlayerId)
                 {
@@ -309,6 +313,19 @@ namespace Server.Game
                     if (p.Info.PlayerId == hostId)
                         continue;
                     p.Session.Send(packet);
+                }
+            }
+        }
+
+        // 플레이어 좌표 변경
+        public void SetLocation(PlayerInfo pInfo)
+        {
+            foreach(Player p in _players)
+            {
+                if (p.Info.PlayerId == pInfo.PlayerId)
+                {
+                    p.Info.PosInfo = pInfo.PosInfo;
+                    return;
                 }
             }
         }

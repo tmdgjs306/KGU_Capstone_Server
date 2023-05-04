@@ -22,6 +22,7 @@ class PacketHandler
         //서버 내부 좌표이동 
         PlayerInfo info = clientSession.MyPlayer.Info;
         info.PosInfo = movePacket.PosInfo;
+        clientSession.MyPlayer.Room.SetLocation(info);
 
         // 다른 플레이어에게 이동 좌표 전송 
         S_PlayerMove resMovePacket = new S_PlayerMove();

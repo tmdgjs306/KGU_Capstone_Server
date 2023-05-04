@@ -85,7 +85,7 @@ namespace Server.Game
                 if (p1.Info.PlayerId != enemy.enemyInfo.PlayerId)
                 {
                     resetPacket.PlayerId = p1.Info.PlayerId;
-
+                    resetPacket.EnemyId = enemy.enemyInfo.EnemyId;
                     Broadcast(resetPacket);
                 }
                 }

@@ -50,6 +50,7 @@ class PacketHandler
         clientSession.MyPlayer.Room.Broadcast(resActionPacket,resActionPacket.PlayerId);
     }
     #endregion
+
     public static void C_EnemyMoveHandler(PacketSession session, IMessage packet)
     {
         // TODO
@@ -61,4 +62,42 @@ class PacketHandler
         enemy.enemyInfo.PosInfo = eMovePacket.Posinfo;
         
     }
+
+    #region 플레이어 삭제 핸들러 
+    public static void C_PlayerDestroyHandler(PacketSession session, IMessage packet)
+    {
+
+    }
+    #endregion
+
+    #region 적 삭제 핸들러
+    public static void C_EnemyDestroyHandler(PacketSession session, IMessage packet)
+    {
+
+    }
+    #endregion
+
+    #region 적 히트 핸들러
+    public static void C_EnemyHitHandler(PacketSession session, IMessage packet)
+    {
+        C_EnemyHit eHitInfoPacket = packet as C_EnemyHit;
+        S_EnemyHit eHitPacket = new S_EnemyHit();
+        ClientSession clientSession = session as ClientSession;
+        eHitPacket.EnemyId = eHitInfoPacket.EnemyId;
+        eHitPacket.CurHp = eHitInfoPacket.CurHp;
+        clientSession.MyPlayer.Room.Broadcast(eHitPacket, clientSession.MyPlayer.Info.PlayerId);
+    }
+    #endregion
+
+    #region 플레이어 히트 핸들러
+    public static void C_PlayerHitHandler(PacketSession session, IMessage packet)
+    {
+        C_PlayerHit eHitInfoPacket = packet as C_PlayerHit;
+        S_PlayerHit eHitPacket = new S_PlayerHit();
+        ClientSession clientSession = session as ClientSession;
+        eHitPacket.PlayerId = eHitInfoPacket.PlayerId;
+        eHitPacket.CurHp = eHitInfoPacket.CurHp;
+        clientSession.MyPlayer.Room.Broadcast(eHitPacket, clientSession.MyPlayer.Info.PlayerId);
+    }
+    #endregion
 }

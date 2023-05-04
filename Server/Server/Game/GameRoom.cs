@@ -29,6 +29,7 @@ namespace Server.Game
         static System.Timers.Timer tartgetResetTimer;
 
         int hostId = 0;
+
         // 게임 진행시 사용되는 타이머 설정
         public void SetTimer()
         {
@@ -85,6 +86,7 @@ namespace Server.Game
                     }
                 }
 
+
                 // 만약 타겟이 변경 되었다면 알려준다
                 if (p1.Info.PlayerId != enemy.enemyInfo.PlayerId)
                 {
@@ -101,15 +103,11 @@ namespace Server.Game
             foreach (Enemy T in EnemyManager.Instance._enemys.Values)
             {
                 S_EnemyMove enemyMovePacket = new S_EnemyMove();
-                //Player Target = PlayerManager.Instance.Find(T.enemyInfo.PlayerId);
 
                 EnemyPositionInfo ePos = T.enemyInfo.PosInfo;
-                //ePos.PosX = Target.Info.PosInfo.PosX;
-                //ePos.PosZ = Target.Info.PosInfo.PosZ;
-
+     
                 enemyMovePacket.Posinfo = ePos;
                 enemyMovePacket.EnemyId = T.enemyInfo.EnemyId;
-                //T.enemyInfo.PosInfo = ePos;
 
                 MoveBroadcast(enemyMovePacket);
             }
@@ -220,7 +218,7 @@ namespace Server.Game
 
                 //타인에게 정보 전송 
                 {
-                    S_Destroy despawnPacket = new S_Destroy();
+                    S_PlayerDestroy despawnPacket = new S_PlayerDestroy();
                     despawnPacket.PlayerIds.Add(player.Info.PlayerId);
                     foreach (Player p in _players)
                     {

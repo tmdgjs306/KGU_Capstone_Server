@@ -24,13 +24,14 @@ namespace Server.Game
         static System.Timers.Timer gameEndTimer;
         static System.Timers.Timer clockTimer;
         static System.Timers.Timer enemyMoveTimer;
+        static System.Timers.Timer tartgetResetTimer;
 
         int hostId = 0;
         // 게임 진행시 사용되는 타이머 설정
         public void SetTimer()
         {
             // 스폰 패킷 생성 주기 설정
-            spawnTimer = new System.Timers.Timer(2000);
+            spawnTimer = new System.Timers.Timer(5000);
             spawnTimer.Elapsed += SpawnEvent;
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
@@ -52,7 +53,43 @@ namespace Server.Game
             enemyMoveTimer.Elapsed += EnemyMoveEvent;
             enemyMoveTimer.AutoReset = true;
             enemyMoveTimer.Enabled = true;
+
+            tartgetResetTimer = new System.Timers.Timer(1000);
+            tartgetResetTimer.Elapsed += TargetResetEvent;
+            tartgetResetTimer.AutoReset = true;
+            tartgetResetTimer.Enabled = true;
         }
+
+
+        // 1초 마다 모든 적 객체 타겟 변경
+        private void TargetResetEvent(Object source, ElapsedEventArgs e)
+        {
+            foreach (Enemy enemy in EnemyManager.Instance._enemys.Values)
+            {
+                double temp = 9999999;
+                Player p1 = null;
+                S_EnemyTargetReset resetPacket = new S_EnemyTargetReset();
+                float x = enemy.enemyInfo.PosInfo.PosX;
+                float z = enemy.enemyInfo.PosInfo.PosZ;
+                // 현재 위치에서 가장 가까운 플레이어를 타겟으로 설정 
+                foreach (Player p in _players)
+                {
+                    double dist = Math.Pow(x - p.Info.PosInfo.PosX, 2) + Math.Pow(z - p.Info.PosInfo.PosZ, 2);
+                    if (temp > dist)
+                    {
+                        p1 = p;
+                        temp = dist;
+                    }
+                }
+                // 만약 타겟이 변경 되었다면 알려준다
+                if (p1.Info.PlayerId != enemy.enemyInfo.PlayerId)
+                {
+                    resetPacket.PlayerId = p1.Info.PlayerId;
+
+                    Broadcast(resetPacket);
+                }
+                }
+            }
 
         // 0,1초 마다 적 이동 명령 전송 
         private void EnemyMoveEvent(Object source, ElapsedEventArgs e)
@@ -235,7 +272,7 @@ namespace Server.Game
             Broadcast(enemySpawnPacket);
         }
 
-        // 클라이언트에서 받은 패킷 전송(패킷 송신자 제외 브로드캐스팅)
+        // 클라이언트에서 받은 패킷 전송(특정 플레이어 제외 브로드캐스팅)
         public void Broadcast(IMessage packet, int playerId)
         {
             lock (_lock)

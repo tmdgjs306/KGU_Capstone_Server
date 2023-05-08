@@ -14,49 +14,53 @@ namespace Server.Game
         object _lock = new object();
         public int RoomId { get; set; }
         public int time;
+
         List<Player> _players = new List<Player>();
+        //List<Enemy> _enemies = new List<Enemy>();
         EnemyManager enemyManager = new EnemyManager();
         Random rand = new Random();
 
+        //플레이어 초기 좌표 
         int x = 0;
         int z = 0;
 
-        //List<Enemy> _enemies = new List<Enemy>();
         static System.Timers.Timer spawnTimer;
         static System.Timers.Timer gameEndTimer;
         static System.Timers.Timer clockTimer;
         static System.Timers.Timer enemyMoveTimer;
         static System.Timers.Timer tartgetResetTimer;
 
+        //호스트 플레이어 id 초기화
         int hostId = 0;
 
         // 게임 진행시 사용되는 타이머 설정
         public void SetTimer()
         {
-            // 스폰 패킷 생성 주기 설정
+            // 스폰 패킷 생성 주기 설정(5s)
             spawnTimer = new System.Timers.Timer(5000);
             spawnTimer.Elapsed += SpawnEvent;
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
 
-            //게임 클리어 시간 설정 
+            //게임 클리어 시간 설정(90s)
             gameEndTimer = new System.Timers.Timer(90000);
             gameEndTimer.Elapsed += EndGameEvent;
             gameEndTimer.AutoReset = true;
             gameEndTimer.Enabled = true;
 
-            //사용자 시간 동기화
+            //사용자 시간 동기화(1s)
             clockTimer = new System.Timers.Timer(1000);
             clockTimer.Elapsed += ClockEvent;
             clockTimer.AutoReset = true;
             clockTimer.Enabled = true;
 
-            //몬스터 이동
+            //몬스터 이동(0.1s)
             enemyMoveTimer = new System.Timers.Timer(100);
             enemyMoveTimer.Elapsed += EnemyMoveEvent;
             enemyMoveTimer.AutoReset = true;
             enemyMoveTimer.Enabled = true;
 
+            //타겟 설정 타이머 
             tartgetResetTimer = new System.Timers.Timer(1000);
             tartgetResetTimer.Elapsed += TargetResetEvent;
             tartgetResetTimer.AutoReset = true;
@@ -94,8 +98,8 @@ namespace Server.Game
                     resetPacket.EnemyId = enemy.enemyInfo.EnemyId;
                     Broadcast(resetPacket);
                 }
-                }
             }
+        }
 
         // 0,1초 마다 적 이동 명령 전송 
         private void EnemyMoveEvent(Object source, ElapsedEventArgs e)
@@ -117,7 +121,6 @@ namespace Server.Game
         private void ClockEvent(Object source, ElapsedEventArgs e)
         {
             S_TimeInfo timePacket = new S_TimeInfo();
-            Console.WriteLine($"{time}");
             timePacket.Now = time;
             time--;
             Broadcast(timePacket);
@@ -126,13 +129,10 @@ namespace Server.Game
         // 스폰 주기마다 몬스터 생성 
         private void SpawnEvent(Object source, ElapsedEventArgs e)
         {
-            // TODO 
-            // 몬스터 일정 마리 수 이상일 시 생성 중단
+            // 몬스터 일정 마리 수 이상일 시 생성 중단(현재 100마리)
             int Count = EnemyManager.Instance._enemys.Count;
             if (Count >= 100)
-            {
                 return;
-            }
             EnemySpawn();
         }
 
@@ -140,21 +140,27 @@ namespace Server.Game
         {
             //TODO
             //스테이지 이동 기능 구현 
-
         }
 
+
+        //플레이어가 처음 방에 입장 했을때 초기화 작업
         public void EnterGame(Player newPlayer)
         {
+            //만약 신규 플레이어가 null로 왔다면 리턴 
             if (newPlayer == null)
                 return;
+
             lock (_lock)
             {
                 _players.Add(newPlayer);
                 newPlayer.Room = this;
+
+                //플레이어 초기좌표 설정 
                 newPlayer.Info.PosInfo.PosX = x;
                 newPlayer.Info.PosInfo.PosZ = z;
                 x += 5;
                 z += 5;
+
                 //만약 사용자가 처음 입장 하였다면 시간을 90초로 설정 
                 if (_players.Count == 1)
                 {
@@ -208,7 +214,44 @@ namespace Server.Game
                 Player player = _players.Find(p => p.Info.PlayerId == PlayerId);
                 if (player == null)
                     return;
-                player.Room = null;
+
+                //호스트 플레이어가 나가는 경우 
+                if(hostId == PlayerId)
+                {
+                    foreach(Player p in _players)
+                    {
+                        //호스트 플레이어 변경 
+                        if(player!= p )
+                        {
+                            S_HostUser hostPacket = new S_HostUser();
+                            p.Session.Send(hostPacket);
+                            hostId = p.Info.PlayerId;
+                            break;
+                        }
+                    }
+                }
+
+                //자신이 타겟인 몬스터가 있는 경우
+                foreach(Enemy e in EnemyManager.Instance._enemys.Values)
+                {
+                    if(e.enemyInfo.PlayerId == PlayerId)
+                    {
+                        S_EnemyTargetReset resetPacket = new S_EnemyTargetReset();
+
+                        //플레이어 중 한명 선택 
+                        foreach (Player p in _players)
+                        {
+                            //타겟 변경 
+                            if (player != p)
+                            {
+                                resetPacket.PlayerId = p.Info.PlayerId;
+                                resetPacket.EnemyId = e.enemyInfo.EnemyId;
+                                Broadcast(resetPacket,PlayerId);
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 //자신에게 정보 전송
                 {
@@ -220,13 +263,11 @@ namespace Server.Game
                 {
                     S_PlayerDestroy despawnPacket = new S_PlayerDestroy();
                     despawnPacket.PlayerIds.Add(player.Info.PlayerId);
-                    foreach (Player p in _players)
-                    {
-                        if (player != p)
-                            p.Session.Send(despawnPacket);
-                    }
+                    Broadcast(despawnPacket, PlayerId);
                 }
+                player.Room = null;
                 _players.Remove(player);
+                PlayerManager.Instance.Remove(PlayerId);
             }
         }
 

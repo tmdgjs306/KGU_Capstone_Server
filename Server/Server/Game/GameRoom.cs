@@ -60,8 +60,8 @@ namespace Server.Game
             enemyMoveTimer.AutoReset = true;
             enemyMoveTimer.Enabled = true;
 
-            //타겟 설정 타이머 
-            tartgetResetTimer = new System.Timers.Timer(1000);
+            //타겟 설정 타이머(0.1s) 
+            tartgetResetTimer = new System.Timers.Timer(100);
             tartgetResetTimer.Elapsed += TargetResetEvent;
             tartgetResetTimer.AutoReset = true;
             tartgetResetTimer.Enabled = true;
@@ -90,10 +90,10 @@ namespace Server.Game
                     }
                 }
 
-
                 // 만약 타겟이 변경 되었다면 알려준다
                 if (p1.Info.PlayerId != enemy.enemyInfo.PlayerId)
                 {
+                    enemy.enemyInfo.PlayerId = p1.Info.PlayerId;
                     resetPacket.PlayerId = p1.Info.PlayerId;
                     resetPacket.EnemyId = enemy.enemyInfo.EnemyId;
                     Broadcast(resetPacket);

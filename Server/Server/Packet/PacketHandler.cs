@@ -79,7 +79,7 @@ class PacketHandler
         S_EnemyDestroy sEnemyDestroyPacekt = new S_EnemyDestroy();
         ClientSession clientSession = session as ClientSession;
         sEnemyDestroyPacekt.EnemyIds = eDestroyPaceket.EnemyIds;
-        clientSession.MyPlayer.Room.Broadcast(sEnemyDestroyPacekt);
+        clientSession.MyPlayer.Room.Broadcast(sEnemyDestroyPacekt,clientSession.MyPlayer.Info.PlayerId);
 
     }
     #endregion

@@ -75,6 +75,11 @@ class PacketHandler
     #region 적 삭제 핸들러
     public static void C_EnemyDestroyHandler(PacketSession session, IMessage packet)
     {
+        C_EnemyDestroy eDestroyPaceket = packet as C_EnemyDestroy;
+        S_EnemyDestroy sEnemyDestroyPacekt = new S_EnemyDestroy();
+        ClientSession clientSession = session as ClientSession;
+        sEnemyDestroyPacekt.EnemyIds = eDestroyPaceket.EnemyIds;
+        clientSession.MyPlayer.Room.Broadcast(sEnemyDestroyPacekt);
 
     }
     #endregion
@@ -100,6 +105,13 @@ class PacketHandler
         eHitPacket.PlayerId = eHitInfoPacket.PlayerId;
         eHitPacket.CurHp = eHitInfoPacket.CurHp;
         clientSession.MyPlayer.Room.Broadcast(eHitPacket, clientSession.MyPlayer.Info.PlayerId);
+    }
+    #endregion
+
+    #region 채팅 핸들러
+    public static void C_PlayerChatHandler(PacketSession session, IMessage packet)
+    {
+
     }
     #endregion
 }

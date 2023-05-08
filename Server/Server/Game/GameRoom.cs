@@ -262,7 +262,7 @@ namespace Server.Game
                 //타인에게 정보 전송 
                 {
                     S_PlayerDestroy despawnPacket = new S_PlayerDestroy();
-                    despawnPacket.PlayerIds.Add(player.Info.PlayerId);
+                    despawnPacket.PlayerIds = player.Info.PlayerId;
                     Broadcast(despawnPacket, PlayerId);
                 }
                 player.Room = null;

@@ -368,7 +368,12 @@ namespace Server.Game
                 }
             }
         }
-
+        
+        // 죽은 적 객체 삭제 
+        public void DestroyEnemy(int enemyId)
+        {
+            EnemyManager.Instance._enemys.Remove(enemyId);
+        }
 
     }
 }

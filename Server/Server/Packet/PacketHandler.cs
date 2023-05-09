@@ -54,7 +54,6 @@ class PacketHandler
     #region 적 이동 핸들러
     public static void C_EnemyMoveHandler(PacketSession session, IMessage packet)
     {
-        // TODO
         // Host Player 로 부터 받은 몬스터 좌표로 좌표 설정 
         C_EnemyMove eMovePacket = packet as C_EnemyMove;
         ClientSession clientSession = session as ClientSession;
@@ -80,7 +79,7 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
         sEnemyDestroyPacekt.EnemyIds = eDestroyPaceket.EnemyIds;
         clientSession.MyPlayer.Room.Broadcast(sEnemyDestroyPacekt,clientSession.MyPlayer.Info.PlayerId);
-
+        clientSession.MyPlayer.Room.DestroyEnemy(eDestroyPaceket.EnemyIds);
     }
     #endregion
 

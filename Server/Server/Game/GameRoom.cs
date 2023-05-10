@@ -14,7 +14,7 @@ namespace Server.Game
         object _lock = new object();
         public int RoomId { get; set; }
         public int time;
-
+        public int count = 0;
         List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
         EnemyManager enemyManager = new EnemyManager();
@@ -75,6 +75,7 @@ namespace Server.Game
             {
                 double temp = 9999999;
                 Player p1 = null;
+
                 S_EnemyTargetReset resetPacket = new S_EnemyTargetReset();
                 float x = enemy.enemyInfo.PosInfo.PosX;
                 float z = enemy.enemyInfo.PosInfo.PosZ;
@@ -160,7 +161,6 @@ namespace Server.Game
                 newPlayer.Info.PosInfo.PosZ = z;
                 x += 5;
                 z += 5;
-
                 //만약 사용자가 처음 입장 하였다면 시간을 90초로 설정 
                 if (_players.Count == 1)
                 {
@@ -203,7 +203,7 @@ namespace Server.Game
                         }
                     }
                 }
-
+                count++;
             }
         }
 
@@ -262,12 +262,13 @@ namespace Server.Game
                 //타인에게 정보 전송 
                 {
                     S_PlayerDestroy despawnPacket = new S_PlayerDestroy();
-                    despawnPacket.PlayerIds = player.Info.PlayerId;
+                    despawnPacket.PlayerId = player.Info.PlayerId;
                     Broadcast(despawnPacket, PlayerId);
                 }
                 player.Room = null;
                 _players.Remove(player);
                 PlayerManager.Instance.Remove(PlayerId);
+                count--;
             }
         }
 
@@ -315,7 +316,7 @@ namespace Server.Game
             Broadcast(enemySpawnPacket);
         }
 
-        // 클라이언트에서 받은 패킷 전송(특정 플레이어 제외 브로드캐스팅)
+        // 패킷 전송(특정 플레이어 제외 브로드캐스팅)
         public void Broadcast(IMessage packet, int playerId)
         {
             lock (_lock)
@@ -375,5 +376,29 @@ namespace Server.Game
             EnemyManager.Instance._enemys.Remove(enemyId);
         }
 
+        public void TargetRest(int playerId)
+        {
+            foreach(Enemy e in enemyManager._enemys.Values)
+            {
+                if(e.enemyInfo.PlayerId == playerId)
+                {
+                    S_EnemyTargetReset resetPacket = new S_EnemyTargetReset();
+                    //플레이어 중 한명 선택 
+                    foreach (Player p in _players)
+                    {
+                        //타겟 변경 
+                        if (playerId != p.Info.PlayerId)
+                        {
+                            resetPacket.PlayerId = p.Info.PlayerId;
+                            resetPacket.EnemyId = e.enemyInfo.EnemyId;
+                            Broadcast(resetPacket, playerId);
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+        }
     }
 }

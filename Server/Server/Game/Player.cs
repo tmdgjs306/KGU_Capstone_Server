@@ -10,5 +10,6 @@ namespace Server.Game
         public PlayerInfo Info { get; set; } = new PlayerInfo() { PosInfo = new PlayerPositionInfo () };
         public GameRoom Room { get; set; }
         public ClientSession Session { get; set; }
+        public bool isAlive = true;
     }
 }

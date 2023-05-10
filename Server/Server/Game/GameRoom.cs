@@ -83,6 +83,7 @@ namespace Server.Game
                 // 현재 위치에서 가장 가까운 플레이어를 타겟으로 설정 
                 foreach (Player p in _players)
                 {
+                    if (p.isAlive == false) continue;
                     double dist = Math.Pow(x - p.Info.PosInfo.PosX, 2) + Math.Pow(z - p.Info.PosInfo.PosZ, 2);
                     if (temp > dist)
                     {
@@ -298,6 +299,7 @@ namespace Server.Game
             // 생성된 위치에서 가장 가까운 플레이어를 타겟으로 설정 
             foreach (Player p in _players)
             {
+                if (p.isAlive == false) continue;
                 double dist = Math.Pow(x - p.Info.PosInfo.PosX, 2) + Math.Pow(z - p.Info.PosInfo.PosZ, 2);
                 if (temp > dist)
                 {
@@ -376,6 +378,7 @@ namespace Server.Game
             EnemyManager.Instance._enemys.Remove(enemyId);
         }
 
+        // 타겟 변경 
         public void TargetRest(int playerId)
         {
             foreach(Enemy e in enemyManager._enemys.Values)
@@ -386,6 +389,7 @@ namespace Server.Game
                     //플레이어 중 한명 선택 
                     foreach (Player p in _players)
                     {
+                        if (p.isAlive == false) continue;
                         //타겟 변경 
                         if (playerId != p.Info.PlayerId)
                         {
@@ -395,10 +399,21 @@ namespace Server.Game
                             break;
                         }
                     }
+
                 }
-
             }
+        }
 
+        // 플레이어 사망 처리 
+        public void PlayerDead(int playerId)
+        {
+            foreach(Player p in _players)
+            {
+                if(p.Info.PlayerId == playerId)
+                {
+                    p.isAlive = false;
+                }
+            }
         }
     }
 }

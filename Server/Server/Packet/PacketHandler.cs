@@ -75,6 +75,8 @@ class PacketHandler
         sPlayerDestroyPacket.PlayerId = cPlayerDestroyPacket.PlayerId;
 
         clientSession.MyPlayer.Room.Broadcast(sPlayerDestroyPacket, cPlayerDestroyPacket.PlayerId);
+        clientSession.MyPlayer.Room.count--;
+        clientSession.MyPlayer.Room.PlayerDead(cPlayerDestroyPacket.PlayerId);
     }
     #endregion
 

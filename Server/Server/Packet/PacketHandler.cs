@@ -141,7 +141,8 @@ class PacketHandler
             clientSession.MyPlayer.Room.selects.Add(cPlayerSelectPacket.PlayerCode);
             S_GameReady gameReadyPacket = new S_GameReady();
             clientSession.Send(gameReadyPacket);
-            if (clientSession.MyPlayer.Room._players.Count == 2)
+            clientSession.MyPlayer.Room.selectCount++;
+            if (clientSession.MyPlayer.Room.selectCount == 2)
             {
                 S_MainGameStart mainGameStartPacket = new S_MainGameStart();
                 clientSession.MyPlayer.Room.Broadcast(mainGameStartPacket);

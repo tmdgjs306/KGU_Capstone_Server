@@ -16,6 +16,7 @@ namespace Server.Game
         public int RoomId { get; set; }
         public int time;
         public int count = 0;
+        public int selectCount = 0;
         public List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
         EnemyManager enemyManager = new EnemyManager();

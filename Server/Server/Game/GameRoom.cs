@@ -11,7 +11,7 @@ namespace Server.Game
 {
     public class GameRoom
     {
-        public List<bool> _selects = new List<bool>();
+        public HashSet<int> selects = new HashSet<int>();  
         object _lock = new object();
         public int RoomId { get; set; }
         public int time;

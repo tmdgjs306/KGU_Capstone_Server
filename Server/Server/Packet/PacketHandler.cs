@@ -141,6 +141,16 @@ class PacketHandler
             clientSession.MyPlayer.Room.selects.Add(cPlayerSelectPacket.PlayerCode);
             S_GameReady gameReadyPacket = new S_GameReady();
             clientSession.Send(gameReadyPacket);
+            if (clientSession.MyPlayer.Room._players.Count == 2)
+            {
+                S_MainGameStart mainGameStartPacket = new S_MainGameStart();
+                clientSession.MyPlayer.Room.Broadcast(mainGameStartPacket);
+                foreach(Player p in clientSession.MyPlayer.Room._players)
+                {
+                    clientSession.MyPlayer.Room.StartGame(p);
+                }
+                clientSession.MyPlayer.Room.time = 90;
+            }
         }
     }
     #endregion

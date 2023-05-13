@@ -36,14 +36,30 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			// PROTO Test
+			//플레이어 세션 설정 
 			MyPlayer = PlayerManager.Instance.Add();
             {
 				MyPlayer.Info.Name = $"Player_{MyPlayer.Info.PlayerId}";
 				MyPlayer.Session = this;
             }
+			bool isFindGameRoom = false;
 
-			RoomManager.Instance.Find(1).EnterGame(MyPlayer);
+			foreach(GameRoom gameRoom in RoomManager.Instance._rooms.Values)
+            {
+				if(gameRoom._players.Count < 2)
+                {
+					isFindGameRoom = true;
+					gameRoom.EnterGame(MyPlayer);
+                }
+            }
+			
+			if(!isFindGameRoom)
+            {
+				GameRoom gameRoom = RoomManager.Instance.Add();
+				gameRoom.EnterGame(MyPlayer);
+            }
+
+			//RoomManager.Instance.Find(1).EnterGame(MyPlayer);
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)

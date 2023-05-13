@@ -15,7 +15,7 @@ namespace Server.Game
         public int RoomId { get; set; }
         public int time;
         public int count = 0;
-        List<Player> _players = new List<Player>();
+        public List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
         EnemyManager enemyManager = new EnemyManager();
         Random rand = new Random();
@@ -32,7 +32,7 @@ namespace Server.Game
 
         //호스트 플레이어 id 초기화
         int hostId = 0;
-
+        bool isGameStart = false;
         // 게임 진행시 사용되는 타이머 설정
         public void SetTimer()
         {
@@ -128,10 +128,12 @@ namespace Server.Game
             Broadcast(timePacket);
         }
 
-        // 스폰 주기마다 몬스터 생성 
+        // 스폰 주기마다 몬스터 생성 (5s)
         private void SpawnEvent(Object source, ElapsedEventArgs e)
         {
             // 몬스터 일정 마리 수 이상일 시 생성 중단(현재 100마리)
+            if (!isGameStart)
+                return;
             int Count = EnemyManager.Instance._enemys.Count;
             if (Count >= 100)
                 return;
@@ -144,9 +146,30 @@ namespace Server.Game
             //스테이지 이동 기능 구현 
         }
 
-
-        //플레이어가 처음 방에 입장 했을때 초기화 작업
         public void EnterGame(Player newPlayer)
+        {
+            _players.Add(newPlayer);
+            newPlayer.Room = this;
+
+            //호스트 플레이어 설정 
+            if(_players.Count ==1)
+            {
+                S_HostUser hostPacket = new S_HostUser();
+                newPlayer.Session.Send(hostPacket);
+                hostId = newPlayer.Info.PlayerId;
+            }
+
+            //만약 방에 모든 인원이 접속했다면 Game Start 패킷 전송
+            if(_players.Count ==2)
+            {
+                S_GameStart gameStartPacket = new S_GameStart();
+                Broadcast(gameStartPacket);
+            }
+
+        }
+        
+        //플레이어가 처음 방에 입장 했을때 초기화 작업
+        public void StartGame(Player newPlayer)
         {
             //만약 신규 플레이어가 null로 왔다면 리턴 
             if (newPlayer == null)
@@ -154,22 +177,24 @@ namespace Server.Game
 
             lock (_lock)
             {
-                _players.Add(newPlayer);
-                newPlayer.Room = this;
-
+                /*_players.Add(newPlayer);
+                newPlayer.Room = this;*/
+                
                 //플레이어 초기좌표 설정 
                 newPlayer.Info.PosInfo.PosX = x;
                 newPlayer.Info.PosInfo.PosZ = z;
                 x += 5;
                 z += 5;
+
                 //만약 사용자가 처음 입장 하였다면 시간을 90초로 설정 
-                if (_players.Count == 1)
+                /*if (_players.Count == 1)
                 {
                     time = 90;
                     S_HostUser hostPacket = new S_HostUser();
                     newPlayer.Session.Send(hostPacket);
                     hostId = newPlayer.Info.PlayerId;
-                }
+                }*/
+
 
                 // 자신에게 정보 전송 { 다른 플레이어 정보, 몬스터 스폰 정보 }
                 {
@@ -193,7 +218,7 @@ namespace Server.Game
                 }
 
                 // 타인에게 정보 전송 { 신규 입장한 플레이어 정보  }
-                {
+                /*{
                     S_OtherPlayerSpawn spawnPacket = new S_OtherPlayerSpawn();
                     spawnPacket.Players.Add(newPlayer.Info);
                     foreach (Player p in _players)
@@ -203,7 +228,7 @@ namespace Server.Game
                             p.Session.Send(spawnPacket);
                         }
                     }
-                }
+                }*/
                 count++;
             }
         }
@@ -415,5 +440,7 @@ namespace Server.Game
                 }
             }
         }
+
+
     }
 }

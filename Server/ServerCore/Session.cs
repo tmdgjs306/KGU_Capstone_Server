@@ -130,6 +130,7 @@ namespace ServerCore
 				ArraySegment<byte> buff = _sendQueue.Dequeue();
 				_pendingList.Add(buff);
 			}
+
 			_sendArgs.BufferList = _pendingList;
 
 			try
@@ -227,6 +228,7 @@ namespace ServerCore
 				{
 					Console.WriteLine($"OnRecvCompleted Failed {e}");
 				}
+
 			}
 			else
 			{

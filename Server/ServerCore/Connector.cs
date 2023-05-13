@@ -22,7 +22,6 @@ namespace ServerCore
 				args.Completed += OnConnectCompleted;
 				args.RemoteEndPoint = endPoint;
 				args.UserToken = socket;
-
 				RegisterConnect(args);
 			}
 		}

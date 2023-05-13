@@ -146,13 +146,15 @@ class PacketHandler
             {
                 S_MainGameStart mainGameStartPacket = new S_MainGameStart();
                 clientSession.MyPlayer.Room.Broadcast(mainGameStartPacket);
-                foreach(Player p in clientSession.MyPlayer.Room._players)
-                {
-                    clientSession.MyPlayer.Room.StartGame(p);
-                }
-                clientSession.MyPlayer.Room.time = 90;
             }
         }
     }
     #endregion
+    
+    public static void C_EnterGameHandler(PacketSession session, IMessage packet)
+    {
+        C_EnterGame cEnterGamePacket = packet as C_EnterGame;
+        ClientSession clientSession = session as ClientSession;
+        clientSession.MyPlayer.Room.StartGame(clientSession.MyPlayer);
+    }
 }

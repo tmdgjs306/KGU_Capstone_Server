@@ -34,7 +34,7 @@ namespace Server.Game
 
         //호스트 플레이어 id 초기화
         int hostId = 0;
-        bool isGameStart = false;
+        public bool isGameStart = false;
         // 게임 진행시 사용되는 타이머 설정
         public void SetTimer()
         {

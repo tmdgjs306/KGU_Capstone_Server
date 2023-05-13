@@ -139,6 +139,7 @@ class PacketHandler
         else
         {
             clientSession.MyPlayer.Room.selects.Add(cPlayerSelectPacket.PlayerCode);
+            clientSession.MyPlayer.Info.PlayerType = cPlayerSelectPacket.PlayerCode;
             S_GameReady gameReadyPacket = new S_GameReady();
             clientSession.Send(gameReadyPacket);
             clientSession.MyPlayer.Room.selectCount++;
@@ -146,6 +147,7 @@ class PacketHandler
             {
                 S_MainGameStart mainGameStartPacket = new S_MainGameStart();
                 clientSession.MyPlayer.Room.Broadcast(mainGameStartPacket);
+                clientSession.MyPlayer.Room.isGameStart = true;
             }
         }
     }

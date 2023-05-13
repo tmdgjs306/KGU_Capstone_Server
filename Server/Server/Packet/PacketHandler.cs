@@ -128,8 +128,8 @@ class PacketHandler
     {
         C_PlayerSelect cPlayerSelectPacket = packet as C_PlayerSelect;
         ClientSession clientSession = session as ClientSession;
-
-        if (clientSession.MyPlayer.Room._selects[cPlayerSelectPacket.PlayerCode])
+        
+        if (clientSession.MyPlayer.Room.selects.Contains(cPlayerSelectPacket.PlayerCode))
         {
             S_PlayerAlreadySelected sPlayerAlreadySelectedPacket = new S_PlayerAlreadySelected();
             sPlayerAlreadySelectedPacket.PlayerCode = cPlayerSelectPacket.PlayerCode;
@@ -138,11 +138,10 @@ class PacketHandler
         
         else
         {
-            clientSession.MyPlayer.Room._selects[cPlayerSelectPacket.PlayerCode] = true;
+            clientSession.MyPlayer.Room.selects.Add(cPlayerSelectPacket.PlayerCode);
             S_GameReady gameReadyPacket = new S_GameReady();
             clientSession.Send(gameReadyPacket);
         }
-
     }
     #endregion
 }

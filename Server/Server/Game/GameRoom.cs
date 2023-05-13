@@ -122,6 +122,8 @@ namespace Server.Game
         // 1초마다 시간 동기화
         private void ClockEvent(Object source, ElapsedEventArgs e)
         {
+            if (!isGameStart)
+                return;
             S_TimeInfo timePacket = new S_TimeInfo();
             timePacket.Now = time;
             time--;

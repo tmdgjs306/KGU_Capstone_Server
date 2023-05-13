@@ -122,4 +122,27 @@ class PacketHandler
 
     }
     #endregion
+
+    #region 플레이어 선택 핸들러
+    public static void C_PlayerSelectHandler(PacketSession session, IMessage packet)
+    {
+        C_PlayerSelect cPlayerSelectPacket = packet as C_PlayerSelect;
+        ClientSession clientSession = session as ClientSession;
+
+        if (clientSession.MyPlayer.Room._selects[cPlayerSelectPacket.PlayerCode])
+        {
+            S_PlayerAlreadySelected sPlayerAlreadySelectedPacket = new S_PlayerAlreadySelected();
+            sPlayerAlreadySelectedPacket.PlayerCode = cPlayerSelectPacket.PlayerCode;
+            clientSession.Send(sPlayerAlreadySelectedPacket);
+        }
+        
+        else
+        {
+            clientSession.MyPlayer.Room._selects[cPlayerSelectPacket.PlayerCode] = true;
+            S_GameReady gameReadyPacket = new S_GameReady();
+            clientSession.Send(gameReadyPacket);
+        }
+
+    }
+    #endregion
 }

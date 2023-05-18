@@ -43,7 +43,7 @@ namespace Server.Game
         public void SetTimer()
         {
             // 몬스터 스폰 주기 설정 => stage 단계에 맞춰 레벨 디자인 
-            spawnTimer = new System.Timers.Timer(10000/(curStage+1));
+            spawnTimer = new System.Timers.Timer(5000);
             spawnTimer.Elapsed += SpawnEvent;
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
@@ -152,6 +152,7 @@ namespace Server.Game
                     p.Session.Send(endStagePacket);
                 }
                 time = 91;
+                enemies.Clear();
             }
             Broadcast(timePacket);
         }

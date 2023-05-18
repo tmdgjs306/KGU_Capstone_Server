@@ -18,6 +18,7 @@ namespace Server.Game
         public int count = 0;
         public int selectCount = 0;
         public int enemyId = 1;
+        public int curStage = 0;
         public List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
         //EnemyManager enemyManager = new EnemyManager();
@@ -41,8 +42,8 @@ namespace Server.Game
         // 게임 진행시 사용되는 타이머 설정
         public void SetTimer()
         {
-            // 스폰 패킷 생성 주기 설정(5s)
-            spawnTimer = new System.Timers.Timer(10000);
+            // 몬스터 스폰 주기 설정 => stage 단계에 맞춰 레벨 디자인 
+            spawnTimer = new System.Timers.Timer(10000/(curStage+1));
             spawnTimer.Elapsed += SpawnEvent;
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
@@ -132,10 +133,28 @@ namespace Server.Game
             S_TimeInfo timePacket = new S_TimeInfo();
             timePacket.Now = time;
             time--;
+
+            if(time == 0)
+            {
+                curStage++;
+                foreach(Player p in _players)
+                {
+                    S_EndStage endStagePacket = new S_EndStage();
+                    endStagePacket.CurStage = curStage;
+                    endStagePacket.Players = p.Info;
+                    foreach(Player otherPlayer in _players)
+                    {
+                        if (otherPlayer != p)
+                            endStagePacket.Otherplayers.Add(otherPlayer.Info);
+                    }
+                    p.Session.Send(endStagePacket);
+                }
+                time = 91;
+            }
             Broadcast(timePacket);
         }
 
-        // 스폰 주기마다 몬스터 생성 (5s)
+        // 스폰 주기마다 몬스터 생성
         private void SpawnEvent(Object source, ElapsedEventArgs e)
         {
             // 몬스터 일정 마리 수 이상일 시 생성 중단(현재 100마리)

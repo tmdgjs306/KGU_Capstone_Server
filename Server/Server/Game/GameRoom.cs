@@ -141,6 +141,8 @@ namespace Server.Game
                 {
                     S_EndStage endStagePacket = new S_EndStage();
                     endStagePacket.CurStage = curStage;
+                    p.Info.PosInfo.PosX = 3 + rand.Next(-10, 10);
+                    p.Info.PosInfo.PosZ = 3 + rand.Next(-10, 10);
                     endStagePacket.Players = p.Info;
                     foreach(Player otherPlayer in _players)
                     {

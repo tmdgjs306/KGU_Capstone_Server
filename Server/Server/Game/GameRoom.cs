@@ -137,12 +137,18 @@ namespace Server.Game
             if(time == 0)
             {
                 curStage++;
+                //플레이어 새로운 좌표 랜덤 설정 
+                foreach (Player p in _players)
+                {
+                    p.Info.PosInfo.PosX = 3 + rand.Next(-10, 10);
+                    p.Info.PosInfo.PosZ = 3 + rand.Next(-10, 10);
+                }
+
+                //플레이어 별 패킷 전송
                 foreach(Player p in _players)
                 {
                     S_EndStage endStagePacket = new S_EndStage();
                     endStagePacket.CurStage = curStage;
-                    p.Info.PosInfo.PosX = 3 + rand.Next(-10, 10);
-                    p.Info.PosInfo.PosZ = 3 + rand.Next(-10, 10);
                     endStagePacket.Players = p.Info;
                     foreach(Player otherPlayer in _players)
                     {
@@ -151,8 +157,10 @@ namespace Server.Game
                     }
                     p.Session.Send(endStagePacket);
                 }
+                //패킷 전송후 게임 룸 변수 값 초기화
                 time = 91;
                 enemies.Clear();
+                enemyId = 1;
             }
             Broadcast(timePacket);
         }

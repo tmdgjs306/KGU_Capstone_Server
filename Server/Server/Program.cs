@@ -31,10 +31,10 @@ namespace Server
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
 
 			//서버 주소 설정(로컬 호스트 구동)
-			//IPAddress ipAddr = ipHost.AddressList[0];
+			IPAddress ipAddr = ipHost.AddressList[0];
 
 			//서버 주소 설정(AWS 구동)
-			IPAddress ipAddr = IPAddress.Parse("172.31.41.142");
+			//IPAddress ipAddr = IPAddress.Parse("172.31.41.142");
 
 			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 

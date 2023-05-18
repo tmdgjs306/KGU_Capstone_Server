@@ -119,7 +119,11 @@ class PacketHandler
     #region 채팅 핸들러
     public static void C_PlayerChatHandler(PacketSession session, IMessage packet)
     {
-
+        C_PlayerChat cPlayerChat = packet as C_PlayerChat;
+        S_PlayerChat sPlayerChat = new S_PlayerChat();
+        ClientSession clientSession = session as ClientSession;
+        sPlayerChat.Chat = cPlayerChat.Chat;
+        clientSession.MyPlayer.Room.Broadcast(sPlayerChat, clientSession.MyPlayer.Info.PlayerId);
     }
     #endregion
 

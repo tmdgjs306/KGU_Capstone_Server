@@ -57,10 +57,11 @@ class PacketHandler
         // Host Player 로 부터 받은 몬스터 좌표로 좌표 설정 
         C_EnemyMove eMovePacket = packet as C_EnemyMove;
         ClientSession clientSession = session as ClientSession;
-        Enemy enemy = EnemyManager.Instance.Find(eMovePacket.EnemyId);
-
+        Enemy enemy;
+        clientSession.MyPlayer.Room.enemies.TryGetValue(eMovePacket.EnemyId, out enemy);
+        if (enemy == null)
+            return;
         enemy.enemyInfo.PosInfo = eMovePacket.Posinfo;
-        
     }
     #endregion
 
@@ -157,11 +158,13 @@ class PacketHandler
         }
     }
     #endregion
-    
+
+    #region 게임 시작 핸들러
     public static void C_EnterGameHandler(PacketSession session, IMessage packet)
     {
         C_EnterGame cEnterGamePacket = packet as C_EnterGame;
         ClientSession clientSession = session as ClientSession;
         clientSession.MyPlayer.Room.StartGame(clientSession.MyPlayer);
     }
+    #endregion
 }

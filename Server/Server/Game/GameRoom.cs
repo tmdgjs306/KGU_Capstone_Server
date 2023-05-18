@@ -17,9 +17,12 @@ namespace Server.Game
         public int time;
         public int count = 0;
         public int selectCount = 0;
+        public int enemyId = 1;
         public List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
-        EnemyManager enemyManager = new EnemyManager();
+        //EnemyManager enemyManager = new EnemyManager();
+        //public List<Enemy> enemies = new List<Enemy>();
+        public Dictionary<int,Enemy> enemies= new Dictionary<int,Enemy>();
         Random rand = new Random();
 
         //플레이어 초기 좌표 
@@ -39,7 +42,7 @@ namespace Server.Game
         public void SetTimer()
         {
             // 스폰 패킷 생성 주기 설정(5s)
-            spawnTimer = new System.Timers.Timer(5000);
+            spawnTimer = new System.Timers.Timer(10000);
             spawnTimer.Elapsed += SpawnEvent;
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
@@ -70,10 +73,10 @@ namespace Server.Game
         }
 
 
-        // 1초 마다 모든 적 객체 타겟 변경
+        // 0.1초 마다 모든 적 객체 타겟 변경
         private void TargetResetEvent(Object source, ElapsedEventArgs e)
         {
-            foreach (Enemy enemy in EnemyManager.Instance._enemys.Values)
+            foreach (Enemy enemy in enemies.Values)
             {
                 double temp = 9999999;
                 Player p1 = null;
@@ -108,7 +111,7 @@ namespace Server.Game
         // 0,1초 마다 적 이동 명령 전송 
         private void EnemyMoveEvent(Object source, ElapsedEventArgs e)
         {
-            foreach (Enemy T in EnemyManager.Instance._enemys.Values)
+            foreach (Enemy T in enemies.Values)
             {
                 S_EnemyMove enemyMovePacket = new S_EnemyMove();
 
@@ -138,7 +141,7 @@ namespace Server.Game
             // 몬스터 일정 마리 수 이상일 시 생성 중단(현재 100마리)
             if (!isGameStart)
                 return;
-            int Count = EnemyManager.Instance._enemys.Count;
+            int Count = enemies.Count;
             if (Count >= 100)
                 return;
             EnemySpawn();
@@ -212,13 +215,14 @@ namespace Server.Game
                             spawnPacket.Players.Add(p.Info);
                         
                     }
-                    S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
-                    foreach (Enemy e in EnemyManager.Instance._enemys.Values)
-                    {
-                        enemySpawnPacket.Enemys.Add(e.enemyInfo);
-                    }
+                    //S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
+
+                    //foreach (Enemy e in enemies.Values)
+                    //{
+                    //   enemySpawnPacket.Enemys.Add(e.enemyInfo);
+                    //}
                     newPlayer.Session.Send(spawnPacket);
-                    newPlayer.Session.Send(enemySpawnPacket);
+                    //newPlayer.Session.Send(enemySpawnPacket);
                 }
 
                 // 타인에게 정보 전송 { 신규 입장한 플레이어 정보  }
@@ -262,7 +266,7 @@ namespace Server.Game
                 }
 
                 //자신이 타겟인 몬스터가 있는 경우
-                foreach(Enemy e in EnemyManager.Instance._enemys.Values)
+                foreach(Enemy e in enemies.Values)
                 {
                     if(e.enemyInfo.PlayerId == PlayerId)
                     {
@@ -317,14 +321,11 @@ namespace Server.Game
             pos.PosZ = z;
 
             // 적 정보 설정 
-            //enemyInfo.EnemyId = 
+            enemyInfo.EnemyId = enemyId;
             enemyInfo.Type = 1;
             enemyInfo.PosInfo = pos;
-
-
             double temp = 9999999;
             Player p1 = null;
-
             // 생성된 위치에서 가장 가까운 플레이어를 타겟으로 설정 
             foreach (Player p in _players)
             {
@@ -338,13 +339,12 @@ namespace Server.Game
             }
             enemyInfo.PlayerId = p1.Info.PlayerId;
             // enemyID, Position, playerID 정보 삽입
-
             Enemy enemy = new Enemy();
             enemy.enemyInfo = enemyInfo;
-            //_enemies.Add(enemy);
-            EnemyManager.Instance.Add(enemy);
+            enemies.Add(enemyId, enemy);
             enemySpawnPacket.Enemys.Add(enemyInfo);
             Broadcast(enemySpawnPacket);
+            enemyId++;
         }
 
         // 패킷 전송(특정 플레이어 제외 브로드캐스팅)
@@ -404,13 +404,13 @@ namespace Server.Game
         // 죽은 적 객체 삭제 
         public void DestroyEnemy(int enemyId)
         {
-            EnemyManager.Instance._enemys.Remove(enemyId);
+            enemies.Remove(enemyId);
         }
 
         // 타겟 변경 
         public void TargetRest(int playerId)
         {
-            foreach(Enemy e in enemyManager._enemys.Values)
+            foreach(Enemy e in enemies.Values)
             {
                 if(e.enemyInfo.PlayerId == playerId)
                 {

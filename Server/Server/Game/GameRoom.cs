@@ -295,7 +295,7 @@ namespace Server.Game
                     despawnPacket.PlayerId = player.Info.PlayerId;
                     Broadcast(despawnPacket, PlayerId);
                 }
-                player.Room = null;
+                //player.Room = null;
                 _players.Remove(player);
                 PlayerManager.Instance.Remove(PlayerId);
                 count--;

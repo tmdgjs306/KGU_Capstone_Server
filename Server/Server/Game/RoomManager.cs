@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Server.Game
@@ -45,7 +46,14 @@ namespace Server.Game
                 return null;
             }
         }
-
+        public int FInd(GameRoom gameRoom)
+        {
+            lock (_lock)
+            {
+                int _key = _rooms.FirstOrDefault(x => x.Value == gameRoom).Key;
+                return _key;
+            }
+        }
         public Dictionary<int,GameRoom> FindAll()
         {
             return _rooms;

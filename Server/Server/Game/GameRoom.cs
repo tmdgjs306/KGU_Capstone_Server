@@ -158,9 +158,8 @@ namespace Server.Game
                     p.Session.Send(endStagePacket);
                 }
                 //패킷 전송후 게임 룸 변수 값 초기화
-                time = 11;
+                time = 10;
                 enemies.Clear();
-                enemyId = 1;
             }
             Broadcast(timePacket);
         }

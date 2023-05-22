@@ -177,6 +177,7 @@ class PacketHandler
 
         if (clientSession.MyPlayer.Room.readyCount == 2)
         {
+            clientSession.MyPlayer.Room.isReady = true;
             clientSession.MyPlayer.Room.MoveNextStage();
         }
     }

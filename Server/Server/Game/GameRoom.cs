@@ -20,6 +20,7 @@ namespace Server.Game
         public int enemyId = 1;
         public int curStage = 0;
         public int readyCount = 0;
+        public bool isReady = true;
         public List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
         //EnemyManager enemyManager = new EnemyManager();
@@ -141,6 +142,7 @@ namespace Server.Game
             if(time == 0)
             {
                 readyCount = 0;
+                isReady = false;
                 S_GameClear clearPacket = new S_GameClear();
                 foreach (Player p in _players)
                 {
@@ -150,6 +152,7 @@ namespace Server.Game
 
             Broadcast(timePacket);
         }
+
         // 다음 스테이지로 이동 
         public void MoveNextStage()
         {
@@ -173,6 +176,7 @@ namespace Server.Game
                         endStagePacket.Otherplayers.Add(otherPlayer.Info);
                 }
                 p.Session.Send(endStagePacket);
+
             }
             //패킷 전송후 게임 룸 변수 값 초기화
             time = 30;
@@ -182,6 +186,7 @@ namespace Server.Game
         // 스폰 주기마다 몬스터 생성
         private void SpawnEvent(Object source, ElapsedEventArgs e)
         {
+            if (!isReady) return;
             // 몬스터 일정 마리 수 이상일 시 생성 중단(현재 100마리)
             if (!isGameStart)
                 return;

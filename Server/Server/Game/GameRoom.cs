@@ -40,10 +40,12 @@ namespace Server.Game
         int hostId = 0;
         public bool isGameStart = false;
         // 게임 진행시 사용되는 타이머 설정
+        int SpawnTime = 500;
+        
         public void SetTimer()
         {
             // 몬스터 스폰 주기 설정 => stage 단계에 맞춰 레벨 디자인 
-            spawnTimer = new System.Timers.Timer(5000);
+            spawnTimer = new System.Timers.Timer(SpawnTime);
             spawnTimer.Elapsed += SpawnEvent;
             spawnTimer.AutoReset = true;
             spawnTimer.Enabled = true;
@@ -67,7 +69,7 @@ namespace Server.Game
             enemyMoveTimer.Enabled = true;
 
             //타겟 설정 타이머(0.1s) 
-            tartgetResetTimer = new System.Timers.Timer(100);
+            tartgetResetTimer = new System.Timers.Timer(1000);
             tartgetResetTimer.Elapsed += TargetResetEvent;
             tartgetResetTimer.AutoReset = true;
             tartgetResetTimer.Enabled = true;
@@ -134,6 +136,7 @@ namespace Server.Game
             timePacket.Now = time;
             time--;
 
+            // 스테이지 이동 구현 
             if(time == 0)
             {
                 curStage++;
@@ -158,9 +161,10 @@ namespace Server.Game
                     p.Session.Send(endStagePacket);
                 }
                 //패킷 전송후 게임 룸 변수 값 초기화
-                time = 5;
+                time = 30;
                 enemies.Clear();
             }
+
             Broadcast(timePacket);
         }
 

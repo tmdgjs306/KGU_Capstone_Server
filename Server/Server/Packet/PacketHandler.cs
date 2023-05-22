@@ -88,7 +88,7 @@ class PacketHandler
         S_EnemyDestroy sEnemyDestroyPacekt = new S_EnemyDestroy();
         ClientSession clientSession = session as ClientSession;
         sEnemyDestroyPacekt.EnemyId = eDestroyPaceket.EnemyId;
-        clientSession.MyPlayer.Room.Broadcast(sEnemyDestroyPacekt,clientSession.MyPlayer.Info.PlayerId);
+        clientSession.MyPlayer.Room.MoveBroadcast(sEnemyDestroyPacekt);
         clientSession.MyPlayer.Room.DestroyEnemy(eDestroyPaceket.EnemyId);
     }
     #endregion
@@ -153,7 +153,7 @@ class PacketHandler
                 S_MainGameStart mainGameStartPacket = new S_MainGameStart();
                 clientSession.MyPlayer.Room.Broadcast(mainGameStartPacket);
                 clientSession.MyPlayer.Room.isGameStart = true;
-                clientSession.MyPlayer.Room.time = 5;
+                clientSession.MyPlayer.Room.time = 30;
             }
         }
     }

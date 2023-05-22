@@ -178,6 +178,10 @@ namespace Server.Game
                 p.Session.Send(endStagePacket);
 
             }
+            foreach(Player p in _players)
+            {
+                p.isAlive = true;
+            }
             //패킷 전송후 게임 룸 변수 값 초기화
             time = 30;
             enemies.Clear();

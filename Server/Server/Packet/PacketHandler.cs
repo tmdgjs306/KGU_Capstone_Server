@@ -153,7 +153,7 @@ class PacketHandler
                 S_MainGameStart mainGameStartPacket = new S_MainGameStart();
                 clientSession.MyPlayer.Room.Broadcast(mainGameStartPacket);
                 clientSession.MyPlayer.Room.isGameStart = true;
-                clientSession.MyPlayer.Room.time = 30;
+                clientSession.MyPlayer.Room.time = 10;
             }
         }
     }

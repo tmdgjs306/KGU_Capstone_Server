@@ -19,6 +19,7 @@ namespace Server.Game
         public int selectCount = 0;
         public int enemyId = 1;
         public int curStage = 0;
+        public int readyCount = 0;
         public List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
         //EnemyManager enemyManager = new EnemyManager();
@@ -40,7 +41,7 @@ namespace Server.Game
         int hostId = 0;
         public bool isGameStart = false;
         // 게임 진행시 사용되는 타이머 설정
-        int SpawnTime = 500;
+        int SpawnTime = 1000;
         
         public void SetTimer()
         {
@@ -139,33 +140,43 @@ namespace Server.Game
             // 스테이지 이동 구현 
             if(time == 0)
             {
-                curStage++;
-                //플레이어 새로운 좌표 랜덤 설정 
+                readyCount = 0;
+                S_GameClear clearPacket = new S_GameClear();
                 foreach (Player p in _players)
                 {
-                    p.Info.PosInfo.PosX = 3 + rand.Next(-10, 10);
-                    p.Info.PosInfo.PosZ = 3 + rand.Next(-10, 10);
+                    p.Session.Send(clearPacket);
                 }
-
-                //플레이어 별 패킷 전송
-                foreach(Player p in _players)
-                {
-                    S_EndStage endStagePacket = new S_EndStage();
-                    endStagePacket.CurStage = curStage;
-                    endStagePacket.Players = p.Info;
-                    foreach(Player otherPlayer in _players)
-                    {
-                        if (otherPlayer != p)
-                            endStagePacket.Otherplayers.Add(otherPlayer.Info);
-                    }
-                    p.Session.Send(endStagePacket);
-                }
-                //패킷 전송후 게임 룸 변수 값 초기화
-                time = 30;
-                enemies.Clear();
             }
 
             Broadcast(timePacket);
+        }
+        // 다음 스테이지로 이동 
+        public void MoveNextStage()
+        {
+            curStage++;
+            //플레이어 새로운 좌표 랜덤 설정 
+            foreach (Player p in _players)
+            {
+                p.Info.PosInfo.PosX = 3 + rand.Next(-10, 10);
+                p.Info.PosInfo.PosZ = 3 + rand.Next(-10, 10);
+            }
+
+            //플레이어 별 패킷 전송
+            foreach (Player p in _players)
+            {
+                S_EndStage endStagePacket = new S_EndStage();
+                endStagePacket.CurStage = curStage;
+                endStagePacket.Players = p.Info;
+                foreach (Player otherPlayer in _players)
+                {
+                    if (otherPlayer != p)
+                        endStagePacket.Otherplayers.Add(otherPlayer.Info);
+                }
+                p.Session.Send(endStagePacket);
+            }
+            //패킷 전송후 게임 룸 변수 값 초기화
+            time = 30;
+            enemies.Clear();
         }
 
         // 스폰 주기마다 몬스터 생성

@@ -76,7 +76,7 @@ class PacketHandler
         sPlayerDestroyPacket.PlayerId = cPlayerDestroyPacket.PlayerId;
 
         clientSession.MyPlayer.Room.Broadcast(sPlayerDestroyPacket, cPlayerDestroyPacket.PlayerId);
-        clientSession.MyPlayer.Room.count--;
+        //clientSession.MyPlayer.Room.count--;
         clientSession.MyPlayer.Room.PlayerDead(cPlayerDestroyPacket.PlayerId);
     }
     #endregion
@@ -88,7 +88,7 @@ class PacketHandler
         S_EnemyDestroy sEnemyDestroyPacekt = new S_EnemyDestroy();
         ClientSession clientSession = session as ClientSession;
         sEnemyDestroyPacekt.EnemyId = eDestroyPaceket.EnemyId;
-        clientSession.MyPlayer.Room.MoveBroadcast(sEnemyDestroyPacekt);
+        clientSession.MyPlayer.Room.Broadcast(sEnemyDestroyPacekt,clientSession.MyPlayer.Info.PlayerId);
         clientSession.MyPlayer.Room.DestroyEnemy(eDestroyPaceket.EnemyId);
     }
     #endregion
@@ -165,6 +165,20 @@ class PacketHandler
         C_EnterGame cEnterGamePacket = packet as C_EnterGame;
         ClientSession clientSession = session as ClientSession;
         clientSession.MyPlayer.Room.StartGame(clientSession.MyPlayer);
+    }
+    #endregion
+
+    #region 스테이지 이동 핸들러
+    public static void C_NextStageReadyHandler(PacketSession session, IMessage packet)
+    {
+        C_NextStageReady cNestStageReady = packet as C_NextStageReady;
+        ClientSession clientSession = session as ClientSession;
+        clientSession.MyPlayer.Room.readyCount++;
+
+        if (clientSession.MyPlayer.Room.readyCount == 2)
+        {
+            clientSession.MyPlayer.Room.MoveNextStage();
+        }
     }
     #endregion
 }

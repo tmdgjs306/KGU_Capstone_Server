@@ -72,7 +72,7 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
         S_PlayerDestroy sPlayerDestroyPacket = new S_PlayerDestroy();
 
-        clientSession.MyPlayer.Room.TargetRest(cPlayerDestroyPacket.PlayerId);
+        clientSession.MyPlayer.Room.TargetReset(cPlayerDestroyPacket.PlayerId);
         sPlayerDestroyPacket.PlayerId = cPlayerDestroyPacket.PlayerId;
 
         clientSession.MyPlayer.Room.Broadcast(sPlayerDestroyPacket, cPlayerDestroyPacket.PlayerId);
@@ -153,7 +153,7 @@ class PacketHandler
                 S_MainGameStart mainGameStartPacket = new S_MainGameStart();
                 clientSession.MyPlayer.Room.Broadcast(mainGameStartPacket);
                 clientSession.MyPlayer.Room.isGameStart = true;
-                clientSession.MyPlayer.Room.time = 10;
+                clientSession.MyPlayer.Room.time = 30;
             }
         }
     }

@@ -10,5 +10,16 @@ namespace Server.Game
         public EnemyInfo enemyInfo { get; set; } = new EnemyInfo() { PosInfo = new EnemyPositionInfo() };
         public GameRoom Room { get; set; }
         public ClientSession Session { get; set; }
+        
+        public enum EnemyType
+        {
+            Bat,
+            TurtleShaell,
+            Skeleton,
+            Spider,
+            Golam,
+            Orc
+        };
+        public EnemyType type;
     }
 }

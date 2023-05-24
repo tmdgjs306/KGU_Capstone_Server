@@ -21,6 +21,7 @@ namespace Server.Game
         public int curStage = 0;
         public int readyCount = 0;
         public bool isReady = true;
+        public int enemySpawn = 0;
         public List<Player> _players = new List<Player>();
         //List<Enemy> _enemies = new List<Enemy>();
         //EnemyManager enemyManager = new EnemyManager();
@@ -359,6 +360,7 @@ namespace Server.Game
         // 적 생성 
         private void EnemySpawn()
         {
+            enemySpawn %= 2;
             // 적 좌표 랜덤 설정
             float x = 5 + rand.Next(-30, 30);
             float z = 5 + rand.Next(-30, 30);
@@ -387,11 +389,38 @@ namespace Server.Game
                     temp = dist;
                 }
             }
+            Enemy enemy = new Enemy();
+
+            if (curStage %3 ==0)
+            {
+                if (enemySpawn == 0)
+                    enemy.type = Enemy.EnemyType.Bat;
+                else
+                    enemy.type = Enemy.EnemyType.TurtleShaell;
+                enemySpawn++;
+            }
+            else if(curStage %3 == 1)
+            {
+                if (enemySpawn == 0)
+                    enemy.type = Enemy.EnemyType.Skeleton;
+                else
+                    enemy.type = Enemy.EnemyType.Spider;
+                enemySpawn++;
+            }
+            else if(curStage %3 == 2)
+            {
+                if (enemySpawn == 0)
+                    enemy.type = Enemy.EnemyType.Golam;
+                else
+                    enemy.type = Enemy.EnemyType.Orc;
+                enemySpawn++;
+            }
+
             enemyInfo.PlayerId = p1.Info.PlayerId;
             // enemyID, Position, playerID 정보 삽입
-            Enemy enemy = new Enemy();
             enemy.enemyInfo = enemyInfo;
             enemies.Add(enemyId, enemy);
+
             enemySpawnPacket.Enemys.Add(enemyInfo);
             Broadcast(enemySpawnPacket);
             enemyId++;

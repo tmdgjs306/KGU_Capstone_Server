@@ -396,7 +396,7 @@ namespace Server.Game
                 if (enemySpawn == 0)
                     enemy.type = Enemy.EnemyType.Bat;
                 else
-                    enemy.type = Enemy.EnemyType.TurtleShaell;
+                    enemy.type = Enemy.EnemyType.TurtleShell;
                 enemySpawn++;
             }
             else if(curStage %3 == 1)
@@ -410,7 +410,7 @@ namespace Server.Game
             else if(curStage %3 == 2)
             {
                 if (enemySpawn == 0)
-                    enemy.type = Enemy.EnemyType.Golam;
+                    enemy.type = Enemy.EnemyType.Golem;
                 else
                     enemy.type = Enemy.EnemyType.Orc;
                 enemySpawn++;

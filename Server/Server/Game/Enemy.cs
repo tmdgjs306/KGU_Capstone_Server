@@ -14,10 +14,10 @@ namespace Server.Game
         public enum EnemyType
         {
             Bat,
-            TurtleShaell,
+            TurtleShell,
             Skeleton,
             Spider,
-            Golam,
+            Golem,
             Orc
         };
         public EnemyType type;

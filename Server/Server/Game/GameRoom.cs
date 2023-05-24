@@ -420,7 +420,7 @@ namespace Server.Game
             // enemyID, Position, playerID 정보 삽입
             enemy.enemyInfo = enemyInfo;
             enemies.Add(enemyId, enemy);
-
+            enemy.enemyInfo.Type = (int)enemy.type;
             enemySpawnPacket.Enemys.Add(enemyInfo);
             Broadcast(enemySpawnPacket);
             enemyId++;

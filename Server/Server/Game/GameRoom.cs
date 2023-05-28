@@ -362,8 +362,8 @@ namespace Server.Game
         {
             enemySpawn %= 2;
             // 적 좌표 랜덤 설정
-            float x = 5 + rand.Next(-30, 30);
-            float z = 5 + rand.Next(-30, 30);
+            float x = rand.Next(-25, 25);
+            float z = rand.Next(-25, 25);
             S_EnemySpawn enemySpawnPacket = new S_EnemySpawn();
             EnemyInfo enemyInfo = new EnemyInfo();
             EnemyPositionInfo pos = new EnemyPositionInfo();

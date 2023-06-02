@@ -145,7 +145,7 @@ namespace Server.Game
             time--;
 
             // 스테이지 이동 구현 
-            if(time == 0 && alivePlayer!=2)
+            if(time == 0 && alivePlayer!=0)
             {
                 readyCount = 0;
                 isReady = false;

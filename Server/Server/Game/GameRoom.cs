@@ -28,7 +28,7 @@ namespace Server.Game
         //public List<Enemy> enemies = new List<Enemy>();
         public Dictionary<int,Enemy> enemies= new Dictionary<int,Enemy>();
         Random rand = new Random();
-
+        
         //플레이어 초기 좌표 
         int x = 0;
         int z = 0;
@@ -47,6 +47,9 @@ namespace Server.Game
 
         // 살아있는 플레이어 수 
         int alivePlayer = 0;
+
+        // 총 진행 스테이지 수
+        int totalStage = 0;
         public void SetTimer()
         {
             // 몬스터 스폰 주기 설정 => stage 단계에 맞춰 레벨 디자인 
@@ -142,15 +145,17 @@ namespace Server.Game
             time--;
 
             // 스테이지 이동 구현 
-            if(time == 0)
+            if(time == 0 && alivePlayer!=2)
             {
                 readyCount = 0;
                 isReady = false;
+               
                 S_GameClear clearPacket = new S_GameClear();
                 foreach (Player p in _players)
                 {
                     p.Session.Send(clearPacket);
                 }
+                totalStage++;
             }
 
             Broadcast(timePacket);
@@ -525,6 +530,7 @@ namespace Server.Game
                     alivePlayer--;
                     if (alivePlayer == 0){
                         S_GameOver gameOverPacket = new S_GameOver();
+                        gameOverPacket.Stage = totalStage; 
                         Broadcast(gameOverPacket);
                     }
                 }

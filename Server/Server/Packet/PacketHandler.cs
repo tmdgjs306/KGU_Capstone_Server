@@ -182,4 +182,21 @@ class PacketHandler
         }
     }
     #endregion
+
+    #region 게임 오버 핸들러
+    public static void C_LeaveGameHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        
+        clientSession.MyPlayer.Room.LeaveGame(clientSession.MyPlayer.Info.PlayerId);
+        if (clientSession.MyPlayer.Room._players.Count == 0)
+        {
+            RoomManager.Instance.Remove(RoomManager.Instance.FInd(clientSession.MyPlayer.Room));
+        }
+        else
+        {
+            clientSession.MyPlayer.Room = null;
+        }
+    }
+    #endregion
 }

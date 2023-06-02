@@ -44,7 +44,9 @@ namespace Server.Game
         public bool isGameStart = false;
         // 게임 진행시 사용되는 타이머 설정
         int SpawnTime = 1000;
-        
+
+        // 살아있는 플레이어 수 
+        int alivePlayer = 0;
         public void SetTimer()
         {
             // 몬스터 스폰 주기 설정 => stage 단계에 맞춰 레벨 디자인 
@@ -208,7 +210,7 @@ namespace Server.Game
         {
             _players.Add(newPlayer);
             newPlayer.Room = this;
-
+            alivePlayer++;
             //호스트 플레이어 설정 
             if(_players.Count ==1)
             {
@@ -520,10 +522,15 @@ namespace Server.Game
                 if(p.Info.PlayerId == playerId)
                 {
                     p.isAlive = false;
+                    alivePlayer--;
+                    if (alivePlayer == 0){
+                        S_GameOver gameOverPacket = new S_GameOver();
+                        Broadcast(gameOverPacket);
+                    }
                 }
             }
         }
 
-
+       
     }
 }
